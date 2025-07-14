@@ -1,14 +1,14 @@
 <?php get_header(); ?>
 
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-2"><?php the_title(); ?></h1>
+<div class="max-w-4xl mx-auto px-4 py-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-2"><?php the_title(); ?></h1>
     <p class="text-gray-600 mb-4">Auteur: <?php echo esc_html(get_post_meta(get_the_ID(), 'auteur', true)); ?></p>
 
-    <a href="<?php echo site_url('/formulier'); ?>" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-6">
+    <a href="<?php echo site_url('/formulier'); ?>" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 mb-6 text-sm sm:text-base">
         ✍️ Meld een correctie voor dit boek
     </a>
 
-    <h2 class="text-2xl font-semibold mb-4">Correcties voor dit boek</h2>
+    <h2 class="text-xl sm:text-2xl font-semibold mb-4">Correcties voor dit boek</h2>
 
     <?php
     $corrections = get_posts([
@@ -24,7 +24,29 @@
 
     if ($corrections) :
     ?>
-        <div class="overflow-x-auto">
+        <!-- Op mobiel kaartjes, op desktop tabel -->
+        <div class="space-y-4 sm:hidden">
+            <?php foreach ($corrections as $correction) : 
+                $type = get_post_meta($correction->ID, 'type', true);
+                $type_class = $type === 'aqidah' ? 'text-red-600 font-bold' : 'text-gray-700';
+            ?>
+                <div class="bg-white border rounded-lg shadow p-4">
+                    <p><strong>Druk:</strong> <?php echo esc_html(get_post_meta($correction->ID, 'druk', true)); ?></p>
+                    <p><strong>Bladzijde:</strong> <?php echo esc_html(get_post_meta($correction->ID, 'bladzijde', true)); ?></p>
+                    <p><strong>Type:</strong> <span class="<?php echo $type_class; ?>"><?php echo ucfirst(esc_html($type)); ?></span></p>
+                    <p class="mt-2"><strong>Beschrijving:</strong><br> <?php echo esc_html(get_post_meta($correction->ID, 'beschrijving', true)); ?></p>
+                    <?php
+                    $attachment_id = get_post_meta($correction->ID, 'foto', true);
+                    if ($attachment_id) {
+                        echo '<div class="mt-3">' . wp_get_attachment_image($attachment_id, 'medium', false, ['class' => 'rounded shadow']) . '</div>';
+                    }
+                    ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Desktop tabel -->
+        <div class="hidden sm:block overflow-x-auto">
             <table class="min-w-full table-auto border border-gray-300">
                 <thead>
                     <tr class="bg-gray-100 text-left">

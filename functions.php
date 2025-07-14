@@ -1,4 +1,6 @@
 <?php
+
+add_theme_support('post-thumbnails');
 function boekcontrole_enqueue_styles() {
     wp_enqueue_style('tailwind', 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4', [], null);
     wp_enqueue_style('boekcontrole-style', get_stylesheet_uri());
@@ -29,7 +31,7 @@ function boekcontrole_register_post_types() {
         ],
         'public' => true,
         'has_archive' => false,
-        'supports' => ['title'],
+        'supports' => ['title', 'thumbnail'],
         'publicly_queryable' => false,
         'show_ui' => true
     ]);

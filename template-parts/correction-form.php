@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving'])) {
-    // Als nieuwe boek is ingevuld, eerst het boek aanmaken
+    // Boek aanmaken indien nodig
     if ($_POST['book_select'] === 'nieuw') {
         $new_book_id = wp_insert_post([
             'post_type' => 'book',
@@ -41,14 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving'])) {
         }
     }
 
-    echo '<div class="bg-green-100 text-green-800 p-4 mb-4">Bedankt! Uw correctie is ontvangen.</div>';
+    echo '<div class="bg-green-100 text-green-800 p-4 rounded mb-6">✅ Bedankt! Uw correctie is ontvangen en wordt beoordeeld.</div>';
 }
 ?>
 
-<form method="POST" enctype="multipart/form-data" class="space-y-4">
+<form method="POST" enctype="multipart/form-data" class="space-y-6">
 
-    <label class="block">Boek kiezen:
-        <select name="book_select" id="book_select" class="border p-2 w-full" onchange="toggleNieuwBoek()">
+    <!-- Boek keuze -->
+    <div>
+        <label for="book_select" class="block font-medium mb-1">📘 Kies een boek:</label>
+        <select name="book_select" id="book_select" class="border p-2 w-full rounded" required onchange="toggleNieuwBoek()">
             <option value="">-- Selecteer een boek --</option>
             <?php
             $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' => ['publish', 'pending']]);
@@ -58,43 +60,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving'])) {
             ?>
             <option value="nieuw">➕ Nieuw boek toevoegen</option>
         </select>
-    </label>
-
-    <div id="nieuw_boek_fields" class="hidden">
-        <label class="block">Nieuwe titel:
-            <input type="text" name="nieuw_boek_titel" class="border p-2 w-full">
-        </label>
-        <label class="block">Auteur:
-            <input type="text" name="nieuw_boek_auteur" class="border p-2 w-full">
-        </label>
     </div>
 
-    <label class="block">Druk:
-        <input type="text" name="druk" class="border p-2 w-full">
-    </label>
+    <!-- Nieuw boek invoervelden -->
+    <div id="nieuw_boek_fields" class="hidden space-y-4">
+        <div>
+            <label class="block font-medium mb-1">Titel van nieuw boek:</label>
+            <input type="text" name="nieuw_boek_titel" class="border p-2 w-full rounded">
+        </div>
+        <div>
+            <label class="block font-medium mb-1">Auteur:</label>
+            <input type="text" name="nieuw_boek_auteur" class="border p-2 w-full rounded">
+        </div>
+    </div>
 
-    <label class="block">Bladzijde:
-        <input type="text" name="bladzijde" class="border p-2 w-full">
-    </label>
+    <!-- Correctiegegevens -->
+    <div>
+        <label class="block font-medium mb-1">📚 Druk:</label>
+        <input type="text" name="druk" class="border p-2 w-full rounded" required>
+    </div>
 
-    <label class="block">Type fout:
-        <select name="type" class="border p-2 w-full">
+    <div>
+        <label class="block font-medium mb-1">📄 Bladzijde:</label>
+        <input type="text" name="bladzijde" class="border p-2 w-full rounded" required>
+    </div>
+
+    <div>
+        <label class="block font-medium mb-1">🚩 Type fout:</label>
+        <select name="type" class="border p-2 w-full rounded" required>
             <option value="aqidah">Aqidah</option>
             <option value="typo">Typo</option>
             <option value="misvertaling">Misvertaling</option>
             <option value="overig">Overig</option>
         </select>
-    </label>
+    </div>
 
-    <label class="block">Beschrijving:
-        <textarea name="beschrijving" class="border p-2 w-full" required></textarea>
-    </label>
+    <div>
+        <label class="block font-medium mb-1">📝 Beschrijving van de fout:</label>
+        <textarea name="beschrijving" class="border p-2 w-full rounded" rows="4" required></textarea>
+    </div>
 
-    <label class="block">Afbeelding (optioneel):
-        <input type="file" name="foto" class="border p-2 w-full">
-    </label>
+    <div>
+        <label class="block font-medium mb-1">📷 Voeg afbeelding toe (optioneel):</label>
+        <input type="file" name="foto" accept="image/*" class="border p-2 w-full rounded">
+    </div>
 
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Verzenden</button>
+    <!-- Verstuur knop -->
+    <div>
+        <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition">
+            ✅ Correctie insturen
+        </button>
+    </div>
 </form>
 
 <script>
