@@ -5,6 +5,11 @@ function boekcontrole_enqueue_styles() {
 }
 add_action('wp_enqueue_scripts', 'boekcontrole_enqueue_styles');
 
+function islambieb_enqueue_tailwind() {
+    echo '<script src="https://cdn.tailwindcss.com"></script>';
+}
+add_action('wp_head', 'islambieb_enqueue_tailwind');
+
 function boekcontrole_register_post_types() {
     register_post_type('book', [
         'labels' => [
