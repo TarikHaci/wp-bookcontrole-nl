@@ -46,7 +46,7 @@
         <div class="bg-white border border-gray-200 rounded-xl shadow p-4 flex flex-col justify-between h-full">
             <?php if (has_post_thumbnail($book_id)) : ?>
                 <div class="mb-3">
-                    <?php echo get_the_post_thumbnail($book_id, 'medium', ['class' => 'rounded w-full h-auto object-cover']); ?>
+                    <?php echo get_the_post_thumbnail($book_id, 'medium', ['class' => 'rounded mx-auto h-48 w-auto object-contain']); ?>
                 </div>
             <?php endif; ?>
 
