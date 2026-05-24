@@ -31,14 +31,21 @@ $author     = $book_id ? get_post_meta($book_id, 'auteur', true) : '';
         
         <!-- Header -->
         <div class="bg-gray-50 border-b border-gray-200 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-xl font-extrabold text-gray-900 mb-1 leading-tight">
-                    Correctiemelding
-                </h1>
-                <p class="text-sm text-gray-500">
-                    Gekoppeld aan: <a href="<?php echo esc_url($book_link); ?>" class="font-semibold text-emerald-600 hover:underline"><?php echo esc_html($book_title); ?></a>
-                    <?php if ($author) echo ' <span class="opacity-60">— ' . esc_html($author) . '</span>'; ?>
-                </p>
+            <div class="flex items-center gap-4">
+                <?php if ($book_id && has_post_thumbnail($book_id)) : ?>
+                    <div class="hidden sm:block flex-shrink-0 w-12 h-16 bg-white rounded shadow-sm overflow-hidden border border-gray-200">
+                        <?php echo get_the_post_thumbnail($book_id, 'thumbnail', ['class' => 'w-full h-full object-cover']); ?>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <h1 class="text-xl font-extrabold text-gray-900 mb-1 leading-tight">
+                        Correctiemelding
+                    </h1>
+                    <p class="text-sm text-gray-500">
+                        Gekoppeld aan: <a href="<?php echo esc_url($book_link); ?>" class="font-semibold text-emerald-600 hover:underline"><?php echo esc_html($book_title); ?></a>
+                        <?php if ($author) echo ' <span class="opacity-60">— ' . esc_html($author) . '</span>'; ?>
+                    </p>
+                </div>
             </div>
             <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link gekopieerd!');"
                     class="inline-flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-50 hover:text-emerald-600 transition-colors cursor-pointer shadow-sm">

@@ -5,22 +5,19 @@ $stats = boekcontrole_get_stats();
 $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' => 'publish']);
 ?>
 
-<!-- ═══════════════════════════════════════════════════
-     HERO — Full-width, immersive
-     ═══════════════════════════════════════════════════ -->
 <section class="hero-pattern bg-gradient-to-br from-[#022c22] via-[#064e3b] to-[#047857] text-white">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div class="max-w-2xl">
             <div class="inline-flex items-center gap-2 bg-white/[0.08] border border-white/[0.12] rounded-full px-3 py-1 text-xs font-medium text-white/70 mb-5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 <?php echo intval($stats['corrections']); ?> correcties verwerkt
             </div>
 
-            <h1 class="text-[2rem] sm:text-[2.75rem] font-extrabold leading-[1.15] tracking-tight mb-4">
+            <h1 class="text-[1.75rem] sm:text-[2.25rem] font-extrabold leading-[1.15] tracking-tight mb-3">
                 Correcties in<br>Islamitische boeken
             </h1>
-            <p class="text-[15px] sm:text-base text-white/60 leading-relaxed mb-8 max-w-lg">
-                Help mee om fouten in vertalingen en publicaties te signaleren. Samen zorgen we voor betrouwbare Islamitische literatuur.
+            <p class="text-sm sm:text-base text-white/70 leading-relaxed mb-6 max-w-lg">
+                Help mee om fouten in vertalingen te signaleren. Samen zorgen we voor betrouwbare literatuur.
             </p>
 
             <div class="flex flex-wrap gap-3">
@@ -28,18 +25,6 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
                    class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-lg shadow-amber-500/25 transition-all hover:shadow-xl no-underline">
                     ✍️ Correctie melden
                 </a>
-            </div>
-        </div>
-
-        <!-- Stats row -->
-        <div class="flex gap-8 sm:gap-12 mt-10 pt-8 border-t border-white/[0.08]">
-            <div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-amber-400"><?php echo intval($stats['books']); ?></div>
-                <div class="text-xs text-white/40 mt-0.5 uppercase tracking-wider font-medium">Boeken</div>
-            </div>
-            <div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-amber-400"><?php echo intval($stats['corrections']); ?></div>
-                <div class="text-xs text-white/40 mt-0.5 uppercase tracking-wider font-medium">Correcties</div>
             </div>
         </div>
     </div>
@@ -55,8 +40,8 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
     <!-- Header + search -->
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">📚 Boeken</h2>
-            <p class="text-sm text-gray-500"><?php echo count($books); ?> boek<?php echo count($books) !== 1 ? 'en' : ''; ?> met correctiemeldingen</p>
+            <h2 class="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">Boeken (<?php echo count($books); ?>)</h2>
+            <p class="text-sm text-gray-500">Met in totaal <?php echo intval($stats['corrections']); ?> verwerkte correcties</p>
         </div>
         <div class="relative w-full sm:w-72">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
