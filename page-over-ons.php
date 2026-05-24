@@ -3,12 +3,12 @@
 get_header();
 ?>
 
-<div class="max-w-3xl mx-auto">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
 
     <!-- Page Header -->
     <div class="text-center mb-10">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-5 text-3xl shadow-lg shadow-emerald-500/25">
-            ℹ️
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/25">
+            <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="" class="w-10 h-10 object-contain">
         </div>
         <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Over ons</h1>
         <p class="text-gray-500 text-base max-w-lg mx-auto">Leer meer over het doel van BoekControle en de persoon achter dit initiatief.</p>
@@ -40,15 +40,15 @@ get_header();
 
             <hr class="border-gray-100 my-8">
 
-            <!-- About Bilal Abu Yunus -->
+            <!-- About Ustaadh -->
             <div>
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
                     <span class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-lg">👤</span>
-                    Bilal Abu Yunus
+                    Ustaadh Bilaal Abu Yunus (حفظه الله)
                 </h2>
                 <div class="text-gray-600 text-sm sm:text-base leading-relaxed space-y-4 pl-0 sm:pl-[3.25rem]">
                     <p>
-                        Deze website staat onder toezicht van <strong class="text-gray-800">Bilal Abu Yunus</strong>. Hij is ruim tien jaar werkzaam als vertaler en controleur van islamitische boeken.
+                        Deze website staat onder toezicht van <strong class="text-gray-800">Ustaadh Bilaal Abu Yunus (حفظه الله)</strong>. Hij is ruim tien jaar werkzaam als vertaler en controleur van islamitische boeken.
                     </p>
 
                     <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-3">
@@ -56,7 +56,7 @@ get_header();
                         <div class="flex items-start gap-3">
                             <span class="text-emerald-500 mt-0.5">🎓</span>
                             <p class="text-sm text-gray-600">
-                                Abu Yunus heeft in 2017 een <strong class="text-gray-700">masteropleiding</strong> afgerond in <strong class="text-gray-700">Linguistics (Taalkunde)</strong> aan de universiteit van Leiden. Hij heeft aan dezelfde universiteit een minor in <strong class="text-gray-700">Vertaalwetenschappen</strong> afgerond.
+                                Hij heeft in 2017 een <strong class="text-gray-700">masteropleiding</strong> afgerond in <strong class="text-gray-700">Linguistics (Taalkunde)</strong> aan de universiteit van Leiden. Hij heeft aan dezelfde universiteit een minor in <strong class="text-gray-700">Vertaalwetenschappen</strong> afgerond.
                             </p>
                         </div>
                         <div class="flex items-start gap-3">
@@ -73,7 +73,7 @@ get_header();
                         </div>
                     </div>
 
-                    <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 text-gray-500 italic text-sm bg-emerald-50/50 rounded-r-lg pr-4">
+                    <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 text-gray-500 italic text-sm bg-emerald-50/50 rounded-r-lg pr-4 mt-6">
                         "Moge Allaah onze intenties zuiveren en onze daden accepteren."
                     </blockquote>
                 </div>

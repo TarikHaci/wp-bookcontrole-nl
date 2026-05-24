@@ -14,6 +14,7 @@
     initFilters();
     initFormAjax();
     initNewBookToggle();
+    initWelcomeToggle();
   }
 
   /* ── 1. Mobile Menu ── */
@@ -213,6 +214,32 @@
 
     select.addEventListener('change', () => {
       fields.classList.toggle('is-open', select.value === 'nieuw');
+    });
+  }
+
+  /* ── 8. Welcome Section Toggle ── */
+  function initWelcomeToggle() {
+    const toggleBtn = document.getElementById('bc-welcome-toggle');
+    const content = document.getElementById('bc-welcome-content');
+    const fade = document.getElementById('bc-welcome-fade');
+    if (!toggleBtn || !content || !fade) return;
+
+    let isOpen = false;
+
+    toggleBtn.addEventListener('click', () => {
+      isOpen = !isOpen;
+      
+      if (isOpen) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        fade.style.opacity = '0';
+        toggleBtn.querySelector('span').textContent = 'Klap in';
+        toggleBtn.querySelector('svg').style.transform = 'rotate(180deg)';
+      } else {
+        content.style.maxHeight = '48px';
+        fade.style.opacity = '1';
+        toggleBtn.querySelector('span').textContent = 'Lees verder';
+        toggleBtn.querySelector('svg').style.transform = 'rotate(0deg)';
+      }
     });
   }
 
