@@ -7,7 +7,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10">
                 <div>
                     <div class="flex items-center gap-2 mb-3">
-                        <div class="w-6 h-6 rounded bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-xs">📖</div>
+                        <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="BoekControle Logo" class="h-6 w-auto object-contain">
                         <span class="text-white font-bold">BoekControle.nl</span>
                     </div>
                     <p class="text-[13px] leading-relaxed text-gray-500">

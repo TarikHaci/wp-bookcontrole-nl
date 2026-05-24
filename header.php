@@ -15,9 +15,7 @@
 
                 <!-- Logo -->
                 <a href="<?php echo home_url(); ?>" class="flex items-center gap-2.5 no-underline group">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:shadow-amber-500/50 transition-shadow">
-                        <span class="text-sm">📖</span>
-                    </div>
+                    <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="BoekControle Logo" class="h-8 w-auto object-contain transition-transform group-hover:scale-105">
                     <span class="text-white text-[17px] font-bold tracking-tight">
                         Boek<span class="text-amber-400">Controle</span><span class="font-normal text-white/50 text-sm">.nl</span>
                     </span>

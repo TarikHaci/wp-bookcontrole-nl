@@ -3,12 +3,16 @@ Theme Name: BoekControle.nl
 Theme URI: https://boekcontrole.nl
 Author: WebsiteExpert.nl
 Description: WordPress theme for managing correction reports in Islamic books
-Version: 1.0
+Version: 1.0.1
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html {
   scroll-behavior: smooth;
@@ -24,44 +28,104 @@ body {
   margin: 0;
 }
 
-main { flex: 1; }
-img { max-width: 100%; height: auto; }
+main {
+  flex: 1;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
 
 /* ── Animations ── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
+
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .animate-fade-in-up {
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 .animate-slide-down {
   animation: slideDown 0.3s ease both;
 }
 
 /* Stagger delays */
-.stagger-1  { animation-delay: 0ms; }
-.stagger-2  { animation-delay: 70ms; }
-.stagger-3  { animation-delay: 140ms; }
-.stagger-4  { animation-delay: 210ms; }
-.stagger-5  { animation-delay: 280ms; }
-.stagger-6  { animation-delay: 350ms; }
-.stagger-7  { animation-delay: 420ms; }
-.stagger-8  { animation-delay: 490ms; }
-.stagger-9  { animation-delay: 560ms; }
+.stagger-1 {
+  animation-delay: 0ms;
+}
+
+.stagger-2 {
+  animation-delay: 70ms;
+}
+
+.stagger-3 {
+  animation-delay: 140ms;
+}
+
+.stagger-4 {
+  animation-delay: 210ms;
+}
+
+.stagger-5 {
+  animation-delay: 280ms;
+}
+
+.stagger-6 {
+  animation-delay: 350ms;
+}
+
+.stagger-7 {
+  animation-delay: 420ms;
+}
+
+.stagger-8 {
+  animation-delay: 490ms;
+}
+
+.stagger-9 {
+  animation-delay: 560ms;
+}
 
 /* ── Slide content (new book fields) ── */
 .slide-content {
@@ -69,11 +133,12 @@ img { max-width: 100%; height: auto; }
   max-height: 0;
   opacity: 0;
   transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.3s ease,
-              margin 0.4s ease,
-              padding 0.4s ease;
+    opacity 0.3s ease,
+    margin 0.4s ease,
+    padding 0.4s ease;
   margin-top: 0;
 }
+
 .slide-content.is-open {
   max-height: 20rem;
   opacity: 1;
@@ -91,7 +156,7 @@ img { max-width: 100%; height: auto; }
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(12px);
   display: none;
   align-items: center;
@@ -99,15 +164,17 @@ img { max-width: 100%; height: auto; }
   padding: 2rem;
   cursor: zoom-out;
 }
+
 .lightbox.is-open {
   display: flex;
   animation: fadeIn 0.2s ease;
 }
+
 .lightbox img {
   max-width: 90vw;
   max-height: 90vh;
   border-radius: 0.5rem;
-  box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
 }
 
 /* ── Custom select ── */
@@ -120,34 +187,61 @@ img { max-width: 100%; height: auto; }
 }
 
 /* ── Radio pill buttons ── */
-.type-radio:checked + label {
-  box-shadow: 0 0 0 2px rgba(16,185,129,0.15);
+.type-radio:checked+label {
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
 }
-.type-radio-inhoudelijk:checked + label {
+
+.type-radio-inhoudelijk:checked+label {
   border-color: #ef4444 !important;
   background-color: #fef2f2 !important;
   color: #b91c1c !important;
 }
-.type-radio-typo:checked + label {
+
+.type-radio-typo:checked+label {
   border-color: #f59e0b !important;
   background-color: #fef3c7 !important;
   color: #b45309 !important;
 }
-.type-radio-misvertaling:checked + label {
+
+.type-radio-misvertaling:checked+label {
   border-color: #8b5cf6 !important;
   background-color: #f5f3ff !important;
   color: #6d28d9 !important;
 }
 
 /* ── JS-toggled visibility ── */
-.upload-preview { display: none; }
-.upload-preview.is-visible { display: block; }
-.search-clear { display: none; }
-.search-clear.is-visible { display: flex; }
-.no-results { display: none; }
-.no-results.is-visible { display: block; }
-.mobile-nav { display: none; }
-.mobile-nav.is-open { display: block; animation: slideDown 0.25s ease both; }
+.upload-preview {
+  display: none;
+}
+
+.upload-preview.is-visible {
+  display: block;
+}
+
+.search-clear {
+  display: none;
+}
+
+.search-clear.is-visible {
+  display: flex;
+}
+
+.no-results {
+  display: none;
+}
+
+.no-results.is-visible {
+  display: block;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+.mobile-nav.is-open {
+  display: block;
+  animation: slideDown 0.25s ease both;
+}
 
 /* ── Gradient accent line ── */
 .gradient-accent {
@@ -164,6 +258,7 @@ img { max-width: 100%; height: auto; }
 .book-card {
   position: relative;
 }
+
 .book-card::after {
   content: '';
   position: absolute;
@@ -171,15 +266,28 @@ img { max-width: 100%; height: auto; }
   border-radius: inherit;
   opacity: 0;
   transition: opacity 0.3s ease;
-  box-shadow: 0 8px 30px rgba(5,150,105,0.12);
+  box-shadow: 0 8px 30px rgba(5, 150, 105, 0.12);
   pointer-events: none;
 }
+
 .book-card:hover::after {
   opacity: 1;
 }
 
 /* ── Scrollbar styling ── */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #64748b; }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
