@@ -1,10 +1,9 @@
 /**
  * BoekControle.nl — Frontend JavaScript
- * Live search, mobile menu, drag & drop upload, lightbox, filters, AJAX form submit
+ * Mobile menu, live search, drag & drop upload, lightbox, filters, AJAX form
  */
 (function () {
   'use strict';
-
   document.addEventListener('DOMContentLoaded', init);
 
   function init() {
@@ -17,9 +16,7 @@
     initNewBookToggle();
   }
 
-  /* ==========================================================
-     1. MOBILE MENU
-     ========================================================== */
+  /* ── 1. Mobile Menu ── */
   function initMobileMenu() {
     const toggle = document.getElementById('bc-menu-toggle');
     const nav = document.getElementById('bc-mobile-nav');
@@ -28,13 +25,11 @@
     toggle.addEventListener('click', () => {
       const isOpen = nav.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', isOpen);
-      toggle.innerHTML = isOpen ? '✕' : '☰';
+      toggle.textContent = isOpen ? '✕' : '☰';
     });
   }
 
-  /* ==========================================================
-     2. LIVE SEARCH (Homepage)
-     ========================================================== */
+  /* ── 2. Live Search ── */
   function initSearch() {
     const input = document.getElementById('bc-search');
     const clearBtn = document.getElementById('bc-search-clear');
@@ -42,42 +37,35 @@
     const noResults = document.getElementById('bc-no-results');
     if (!input || !grid) return;
 
-    const cards = Array.from(grid.querySelectorAll('.bc-card'));
+    const cards = Array.from(grid.querySelectorAll('[data-title]'));
 
-    function filterCards() {
-      const query = input.value.toLowerCase().trim();
-      let visibleCount = 0;
+    function filter() {
+      const q = input.value.toLowerCase().trim();
+      let count = 0;
 
       cards.forEach(card => {
         const title = (card.dataset.title || '').toLowerCase();
         const author = (card.dataset.author || '').toLowerCase();
-        const match = !query || title.includes(query) || author.includes(query);
+        const match = !q || title.includes(q) || author.includes(q);
         card.style.display = match ? '' : 'none';
-        if (match) visibleCount++;
+        if (match) count++;
       });
 
-      if (clearBtn) {
-        clearBtn.classList.toggle('is-visible', query.length > 0);
-      }
-      if (noResults) {
-        noResults.classList.toggle('is-visible', visibleCount === 0 && query.length > 0);
-      }
+      if (clearBtn) clearBtn.classList.toggle('is-visible', q.length > 0);
+      if (noResults) noResults.classList.toggle('is-visible', count === 0 && q.length > 0);
     }
 
-    input.addEventListener('input', filterCards);
-
+    input.addEventListener('input', filter);
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
         input.value = '';
-        filterCards();
+        filter();
         input.focus();
       });
     }
   }
 
-  /* ==========================================================
-     3. DRAG & DROP UPLOAD
-     ========================================================== */
+  /* ── 3. Drag & Drop Upload ── */
   function initUpload() {
     const zone = document.getElementById('bc-upload-zone');
     const input = document.getElementById('bc-upload-input');
@@ -85,32 +73,20 @@
     const previewImg = document.getElementById('bc-upload-preview-img');
     if (!zone || !input) return;
 
-    // Click to open file picker
     zone.addEventListener('click', (e) => {
       if (e.target !== input) input.click();
     });
 
-    // Drag events
     ['dragenter', 'dragover'].forEach(evt => {
-      zone.addEventListener(evt, (e) => {
-        e.preventDefault();
-        zone.classList.add('is-dragover');
-      });
+      zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.add('is-dragover'); });
     });
-
     ['dragleave', 'drop'].forEach(evt => {
-      zone.addEventListener(evt, (e) => {
-        e.preventDefault();
-        zone.classList.remove('is-dragover');
-      });
+      zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.remove('is-dragover'); });
     });
 
     zone.addEventListener('drop', (e) => {
       const files = e.dataTransfer.files;
-      if (files.length) {
-        input.files = files;
-        showPreview(files[0]);
-      }
+      if (files.length) { input.files = files; showPreview(files[0]); }
     });
 
     input.addEventListener('change', () => {
@@ -118,9 +94,7 @@
     });
 
     function showPreview(file) {
-      if (!file.type.startsWith('image/')) return;
-      if (!preview || !previewImg) return;
-
+      if (!file.type.startsWith('image/') || !preview || !previewImg) return;
       const reader = new FileReader();
       reader.onload = (e) => {
         previewImg.src = e.target.result;
@@ -130,144 +104,115 @@
     }
   }
 
-  /* ==========================================================
-     4. IMAGE LIGHTBOX
-     ========================================================== */
+  /* ── 4. Lightbox ── */
   function initLightbox() {
     const lightbox = document.getElementById('bc-lightbox');
-    const lightboxImg = document.getElementById('bc-lightbox-img');
-    if (!lightbox || !lightboxImg) return;
+    const lbImg = document.getElementById('bc-lightbox-img');
+    if (!lightbox || !lbImg) return;
 
-    // Open on thumbnail click
     document.addEventListener('click', (e) => {
-      const thumb = e.target.closest('.bc-table__thumbnail, .bc-correction-card img');
+      const thumb = e.target.closest('[data-lightbox]');
       if (!thumb) return;
       e.preventDefault();
-      const src = thumb.dataset.full || thumb.src;
-      lightboxImg.src = src;
+      lbImg.src = thumb.dataset.full || thumb.src;
       lightbox.classList.add('is-open');
       document.body.style.overflow = 'hidden';
     });
 
-    // Close on click
-    lightbox.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
-    });
-
-    function closeLightbox() {
+    function close() {
       lightbox.classList.remove('is-open');
       document.body.style.overflow = '';
     }
   }
 
-  /* ==========================================================
-     5. CORRECTION FILTERS (single-book page)
-     ========================================================== */
+  /* ── 5. Correction Filters ── */
   function initFilters() {
-    const filterBar = document.getElementById('bc-filter-bar');
-    if (!filterBar) return;
+    const bar = document.getElementById('bc-filter-bar');
+    if (!bar) return;
 
-    const buttons = filterBar.querySelectorAll('.bc-filter-btn');
+    const buttons = bar.querySelectorAll('[data-filter]');
     const items = document.querySelectorAll('[data-correction-type]');
 
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const type = btn.dataset.filter;
+        buttons.forEach(b => b.classList.remove('bg-white', 'shadow-sm', 'text-emerald-700', 'border-emerald-300'));
+        buttons.forEach(b => b.classList.add('text-gray-500'));
+        btn.classList.remove('text-gray-500');
+        btn.classList.add('bg-white', 'shadow-sm', 'text-emerald-700', 'border-emerald-300');
 
-        // Toggle active
-        buttons.forEach(b => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-
-        // Filter items
         items.forEach(item => {
-          if (type === 'alle' || item.dataset.correctionType === type) {
-            item.style.display = '';
-          } else {
-            item.style.display = 'none';
-          }
+          item.style.display = (type === 'alle' || item.dataset.correctionType === type) ? '' : 'none';
         });
       });
     });
   }
 
-  /* ==========================================================
-     6. AJAX FORM SUBMIT
-     ========================================================== */
+  /* ── 6. AJAX Form Submit ── */
   function initFormAjax() {
     const form = document.getElementById('bc-correction-form');
     if (!form) return;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = form.querySelector('[type="submit"]');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Bezig met versturen...';
+      btn.classList.add('opacity-70', 'cursor-not-allowed');
 
-      const submitBtn = form.querySelector('[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '⏳ Bezig met versturen...';
-
-      const formData = new FormData(form);
-      formData.append('action', 'bc_submit_correction');
-      formData.append('bc_nonce', (typeof bcAjax !== 'undefined') ? bcAjax.nonce : '');
+      const fd = new FormData(form);
+      fd.append('action', 'bc_submit_correction');
+      fd.append('bc_nonce', typeof bcAjax !== 'undefined' ? bcAjax.nonce : '');
 
       try {
-        const response = await fetch((typeof bcAjax !== 'undefined') ? bcAjax.ajaxUrl : '/wp-admin/admin-ajax.php', {
-          method: 'POST',
-          body: formData,
+        const res = await fetch(typeof bcAjax !== 'undefined' ? bcAjax.ajaxUrl : '/wp-admin/admin-ajax.php', {
+          method: 'POST', body: fd,
         });
+        const data = await res.json();
 
-        const result = await response.json();
-
-        // Remove existing alerts
         form.querySelectorAll('.bc-alert').forEach(a => a.remove());
-
         const alert = document.createElement('div');
-        if (result.success) {
-          alert.className = 'bc-alert bc-alert--success';
-          alert.innerHTML = '✅ ' + result.data.message;
+
+        if (data.success) {
+          alert.className = 'bc-alert p-4 rounded-xl text-sm font-medium flex items-start gap-3 mb-6 bg-emerald-50 text-emerald-800 border border-emerald-200 animate-slide-down';
+          alert.innerHTML = '✅ ' + data.data.message;
           form.reset();
-          // Reset upload preview
           const preview = document.getElementById('bc-upload-preview');
           if (preview) preview.classList.remove('is-visible');
-          // Close new-book fields
-          const slideContent = document.getElementById('bc-new-book-fields');
-          if (slideContent) slideContent.classList.remove('is-open');
+          const slide = document.getElementById('bc-new-book-fields');
+          if (slide) slide.classList.remove('is-open');
         } else {
-          alert.className = 'bc-alert bc-alert--error';
-          alert.innerHTML = '❌ ' + (result.data?.message || 'Er ging iets mis.');
+          alert.className = 'bc-alert p-4 rounded-xl text-sm font-medium flex items-start gap-3 mb-6 bg-red-50 text-red-700 border border-red-200 animate-slide-down';
+          alert.innerHTML = '❌ ' + (data.data?.message || 'Er ging iets mis.');
         }
 
         form.prepend(alert);
         alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      } catch (err) {
+      } catch {
         const alert = document.createElement('div');
-        alert.className = 'bc-alert bc-alert--error';
+        alert.className = 'bc-alert p-4 rounded-xl text-sm font-medium mb-6 bg-red-50 text-red-700 border border-red-200 animate-slide-down';
         alert.innerHTML = '❌ Netwerkfout. Probeer het opnieuw.';
         form.prepend(alert);
       }
 
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalText;
+      btn.disabled = false;
+      btn.innerHTML = original;
+      btn.classList.remove('opacity-70', 'cursor-not-allowed');
     });
   }
 
-  /* ==========================================================
-     7. NEW BOOK TOGGLE (correction form)
-     ========================================================== */
+  /* ── 7. New Book Toggle ── */
   function initNewBookToggle() {
     const select = document.getElementById('book_select');
     const fields = document.getElementById('bc-new-book-fields');
     if (!select || !fields) return;
 
     select.addEventListener('change', () => {
-      if (select.value === 'nieuw') {
-        fields.classList.add('is-open');
-      } else {
-        fields.classList.remove('is-open');
-      }
+      fields.classList.toggle('is-open', select.value === 'nieuw');
     });
   }
 
