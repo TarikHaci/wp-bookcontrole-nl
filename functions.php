@@ -54,6 +54,13 @@ function boekcontrole_seo_meta() {
         $title = $book_title . ' — Correcties | ' . $site_name;
         $description = 'Bekijk correcties voor ' . $book_title . ($auteur ? ' van ' . $auteur : '') . '. ' . $site_name;
         $type = 'article';
+    } elseif (is_singular('correction')) {
+        $corr_title = get_the_title();
+        $book_id = get_post_meta(get_the_ID(), 'book_id', true);
+        $book_title = $book_id ? get_the_title($book_id) : 'een boek';
+        $title = $corr_title . ' | ' . $site_name;
+        $description = 'Specifieke correctie voor het boek ' . $book_title . '. Bekijk de fout en de juiste weergave.';
+        $type = 'article';
     } elseif (is_page()) {
         $page_title = get_the_title();
         $title = $page_title . ' | ' . $site_name;
@@ -112,6 +119,12 @@ function boekcontrole_sitemap() {
     $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' => 'publish']);
     foreach ($books as $b) {
         echo '<url><loc>' . get_permalink($b->ID) . '</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>' . "\n";
+    }
+
+    // Corrections
+    $corrections = get_posts(['post_type' => 'correction', 'numberposts' => -1, 'post_status' => 'publish']);
+    foreach ($corrections as $c) {
+        echo '<url><loc>' . get_permalink($c->ID) . '</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>' . "\n";
     }
 
     echo '</urlset>';
@@ -204,9 +217,10 @@ function boekcontrole_register_post_types() {
         ],
         'public'             => true,
         'has_archive'        => false,
-        'supports'           => ['title'],
-        'publicly_queryable' => false,
+        'supports'           => ['title', 'thumbnail'],
+        'publicly_queryable' => true,
         'show_ui'            => true,
+        'rewrite'            => ['slug' => 'correctie'],
         'menu_icon'          => 'dashicons-edit',
     ]);
 }
@@ -290,7 +304,6 @@ function boekcontrole_correction_meta_box_html($post) {
     $druk         = get_post_meta($post->ID, 'druk', true);
     $type         = get_post_meta($post->ID, 'type', true);
     $beschrijving = get_post_meta($post->ID, 'beschrijving', true);
-    $foto_id      = get_post_meta($post->ID, 'foto', true);
 
     $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' => ['publish','pending','draft'], 'orderby' => 'title', 'order' => 'ASC']);
     ?>
@@ -377,19 +390,6 @@ function boekcontrole_correction_meta_box_html($post) {
         <label for="bc_beschrijving">📝 Beschrijving</label>
         <textarea id="bc_beschrijving" name="beschrijving" class="bc-admin-textarea"
                   placeholder="Beschrijf de fout zo duidelijk mogelijk..."><?php echo esc_textarea($beschrijving); ?></textarea>
-    </div>
-
-    <!-- Foto upload/preview -->
-    <div class="bc-admin-field">
-        <label>📷 Afbeelding</label>
-        <?php if ($foto_id && wp_get_attachment_url($foto_id)) : ?>
-            <div class="bc-admin-foto-preview" style="margin-bottom:8px;">
-                <?php echo wp_get_attachment_image($foto_id, 'medium'); ?>
-            </div>
-            <p class="description">Huidige afbeelding. Upload een nieuwe via "Uitgelichte afbeelding" rechts, of beheer via Media.</p>
-        <?php else : ?>
-            <p class="description">Nog geen afbeelding. Voeg toe via "Uitgelichte afbeelding" rechts →</p>
-        <?php endif; ?>
     </div>
     <?php
 }
@@ -565,7 +565,9 @@ function boekcontrole_handle_correction_ajax() {
         require_once(ABSPATH.'wp-admin/includes/media.php');
         require_once(ABSPATH.'wp-admin/includes/image.php');
         $aid = media_handle_upload('foto', $cid);
-        if (!is_wp_error($aid)) update_post_meta($cid, 'foto', $aid);
+        if (!is_wp_error($aid)) {
+            set_post_thumbnail($cid, $aid);
+        }
     }
 
     wp_send_json_success(['message' => 'Jazaak Allaahu khayran! Uw correctie is ontvangen en wordt beoordeeld.']);

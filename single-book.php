@@ -85,16 +85,31 @@ foreach ($corrections as $c) {
                 $druk = get_post_meta($correction->ID, 'druk', true);
                 $blz  = get_post_meta($correction->ID, 'bladzijde', true);
                 $desc = get_post_meta($correction->ID, 'beschrijving', true);
-                $foto = get_post_meta($correction->ID, 'foto', true);
+                $foto_meta = get_post_meta($correction->ID, 'foto', true);
+                $foto = has_post_thumbnail($correction->ID) ? get_post_thumbnail_id($correction->ID) : $foto_meta;
+                $permalink = get_permalink($correction->ID);
             ?>
-                <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm border-l-[3px] <?php echo bc_type_border_class($type); ?> animate-fade-in-up"
+                <div id="correctie-<?php echo $correction->ID; ?>" 
+                     class="group bg-white rounded-lg border border-gray-200 p-4 shadow-sm border-l-[3px] <?php echo bc_type_border_class($type); ?> animate-fade-in-up target:ring-2 target:ring-emerald-500 target:bg-emerald-50 transition-colors relative"
                      data-correction-type="<?php echo esc_attr($type); ?>"
                      style="animation-delay:<?php echo $idx * 50; ?>ms">
                     <div class="flex items-center justify-between mb-2">
                         <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($type); ?>">
                             <?php echo ucfirst(esc_html($type)); ?>
                         </span>
-                        <span class="text-xs text-gray-400">p. <?php echo esc_html($blz); ?> · druk <?php echo esc_html($druk); ?></span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-400">p. <?php echo esc_html($blz); ?> · druk <?php echo esc_html($druk); ?></span>
+                            <a href="<?php echo esc_url($permalink); ?>" 
+                               title="Bekijk op aparte pagina"
+                               class="text-gray-300 hover:text-emerald-600 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                            <button title="Kopieer link naar deze correctie"
+                               class="text-gray-300 hover:text-emerald-600 transition-colors cursor-pointer bg-transparent border-none p-0"
+                               onclick="navigator.clipboard.writeText('<?php echo esc_url($permalink); ?>'); alert('Link naar correctie gekopieerd!'); return false;">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <p class="text-sm text-gray-700 leading-relaxed"><?php echo esc_html($desc); ?></p>
                     <?php if ($foto) :
@@ -129,10 +144,24 @@ foreach ($corrections as $c) {
                         $druk = get_post_meta($correction->ID, 'druk', true);
                         $blz  = get_post_meta($correction->ID, 'bladzijde', true);
                         $desc = get_post_meta($correction->ID, 'beschrijving', true);
-                        $foto = get_post_meta($correction->ID, 'foto', true);
+                        $foto_meta = get_post_meta($correction->ID, 'foto', true);
+                        $foto = has_post_thumbnail($correction->ID) ? get_post_thumbnail_id($correction->ID) : $foto_meta;
+                        $permalink = get_permalink($correction->ID);
                     ?>
-                        <tr class="hover:bg-gray-50/60 transition-colors" data-correction-type="<?php echo esc_attr($type); ?>">
-                            <td class="px-4 py-3 text-gray-600 whitespace-nowrap"><?php echo esc_html($druk); ?></td>
+                        <tr id="correctie-<?php echo $correction->ID; ?>" class="hover:bg-gray-50/60 transition-colors target:bg-emerald-50 group" data-correction-type="<?php echo esc_attr($type); ?>">
+                            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
+                                <button title="Kopieer link"
+                                   class="inline-block mr-1 text-gray-300 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100 target:opacity-100 bg-transparent border-none p-0 cursor-pointer"
+                                   onclick="navigator.clipboard.writeText('<?php echo esc_url($permalink); ?>'); alert('Link gekopieerd!'); return false;">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                </button>
+                                <a href="<?php echo esc_url($permalink); ?>" 
+                                   title="Bekijk op aparte pagina"
+                                   class="inline-block mr-1 text-gray-300 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100 target:opacity-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </a>
+                                <?php echo esc_html($druk); ?>
+                            </td>
                             <td class="px-4 py-3 text-gray-600"><?php echo esc_html($blz); ?></td>
                             <td class="px-4 py-3">
                                 <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($type); ?>">

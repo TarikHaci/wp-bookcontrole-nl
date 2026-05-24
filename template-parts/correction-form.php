@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving']) && !w
         update_post_meta($cid,'book_id',$book_id);
         if (!empty($_FILES['foto']['name'])) {
             require_once(ABSPATH.'wp-admin/includes/file.php'); require_once(ABSPATH.'wp-admin/includes/media.php'); require_once(ABSPATH.'wp-admin/includes/image.php');
-            $aid = media_handle_upload('foto',$cid); if (!is_wp_error($aid)) update_post_meta($cid,'foto',$aid);
+            $aid = media_handle_upload('foto',$cid); if (!is_wp_error($aid)) set_post_thumbnail($cid, $aid);
         }
         echo '<div class="p-3 rounded-lg text-xs font-medium mb-4 bg-emerald-50 text-emerald-700 border border-emerald-200 animate-slide-down">✅ Jazaak Allaahu khayran! Uw correctie is ontvangen en wordt beoordeeld.</div>';
     }
