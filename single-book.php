@@ -50,7 +50,7 @@ foreach ($corrections as $c) {
                 </span>
                 <?php foreach ($type_counts as $t => $cnt) : ?>
                     <span class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold <?php echo bc_type_badge_classes($t); ?>">
-                        <?php echo ucfirst(esc_html($t)); ?> <?php echo $cnt; ?>
+                        <?php echo ucfirst(esc_html($t)); ?> (<?php echo $cnt; ?>)
                     </span>
                 <?php endforeach; ?>
             </div>

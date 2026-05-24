@@ -147,8 +147,8 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
                     <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="" class="w-6 h-6 object-contain opacity-80">
                 </div>
                 <div>
-                    <h2 class="text-base font-bold text-gray-900">Welkom bij BoekControle.nl</h2>
-                    <p class="text-xs text-gray-500">Van de oprichter</p>
+                    <h2 class="text-base font-bold text-gray-900">BoekControle.nl</h2>
+                    <p class="text-xs text-gray-500">Voorwoord van de oprichter Ustaadh Bilaal Abu Yunus (حفظه الله)</p>
                 </div>
             </div>
 
@@ -162,7 +162,7 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
                 </p>
                 <p class="text-sm font-medium text-gray-800">
                     Jullie broeder,<br>
-                    Ustaadh Bilaal Abu Yunus (حفظه الله)
+                    Abu Yunus
                 </p>
 
                 <!-- Gradient fade when collapsed -->
