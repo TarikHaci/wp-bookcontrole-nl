@@ -5,179 +5,184 @@ $stats = boekcontrole_get_stats();
 $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' => 'publish']);
 ?>
 
-<!-- ═══════════════════════════════════════════════════════
-     HERO SECTION
-     ═══════════════════════════════════════════════════════ -->
-<section class="relative bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-800 text-white rounded-2xl overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 px-6 sm:px-10 lg:px-14 py-12 sm:py-16 mb-10">
-    <!-- Decorative glow -->
-    <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-radial from-amber-500/10 to-transparent pointer-events-none" style="background:radial-gradient(ellipse at 80% 30%, rgba(245,158,11,0.1) 0%, transparent 70%)"></div>
-
-    <div class="relative z-10 max-w-3xl">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-            Correcties in<br>Islamitische boeken
-        </h1>
-        <p class="text-base sm:text-lg text-white/70 mb-8 max-w-2xl leading-relaxed">
-            Help mee om fouten in vertalingen en publicaties te signaleren. Samen zorgen we voor betrouwbare Islamitische literatuur.
-        </p>
-
-        <!-- Stats -->
-        <div class="flex flex-wrap gap-3 sm:gap-4">
-            <div class="bg-white/[0.08] backdrop-blur-md border border-white/[0.12] rounded-xl px-5 sm:px-6 py-4 min-w-[7rem]">
-                <span class="block text-2xl sm:text-3xl font-extrabold text-amber-400"><?php echo intval($stats['books']); ?></span>
-                <span class="block text-sm text-white/60 mt-0.5">Boeken</span>
+<!-- ═══════════════════════════════════════════════════
+     HERO — Full-width, immersive
+     ═══════════════════════════════════════════════════ -->
+<section class="hero-pattern bg-gradient-to-br from-[#022c22] via-[#064e3b] to-[#047857] text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+        <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-2 bg-white/[0.08] border border-white/[0.12] rounded-full px-3 py-1 text-xs font-medium text-white/70 mb-5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <?php echo intval($stats['corrections']); ?> correcties verwerkt
             </div>
-            <div class="bg-white/[0.08] backdrop-blur-md border border-white/[0.12] rounded-xl px-5 sm:px-6 py-4 min-w-[7rem]">
-                <span class="block text-2xl sm:text-3xl font-extrabold text-amber-400"><?php echo intval($stats['corrections']); ?></span>
-                <span class="block text-sm text-white/60 mt-0.5">Correcties</span>
+
+            <h1 class="text-[2rem] sm:text-[2.75rem] font-extrabold leading-[1.15] tracking-tight mb-4">
+                Correcties in<br>Islamitische boeken
+            </h1>
+            <p class="text-[15px] sm:text-base text-white/60 leading-relaxed mb-8 max-w-lg">
+                Help mee om fouten in vertalingen en publicaties te signaleren. Samen zorgen we voor betrouwbare Islamitische literatuur.
+            </p>
+
+            <div class="flex flex-wrap gap-3">
+                <a href="<?php echo site_url('/formulier'); ?>"
+                   class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-lg shadow-amber-500/25 transition-all hover:shadow-xl no-underline">
+                    ✍️ Correctie melden
+                </a>
+                <a href="#boeken"
+                   class="inline-flex items-center gap-2 bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.15] text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all no-underline">
+                    📚 Bekijk boeken
+                </a>
             </div>
         </div>
-    </div>
-</section>
 
-
-<!-- ═══════════════════════════════════════════════════════
-     WELCOME MESSAGE — Abu Yunus
-     ═══════════════════════════════════════════════════════ -->
-<section class="mb-12">
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8 max-w-3xl">
-        <div class="flex items-start gap-4 mb-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-lg shadow-md shadow-emerald-500/20">
-                📝
+        <!-- Stats row -->
+        <div class="flex gap-8 sm:gap-12 mt-10 pt-8 border-t border-white/[0.08]">
+            <div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-400"><?php echo intval($stats['books']); ?></div>
+                <div class="text-xs text-white/40 mt-0.5 uppercase tracking-wider font-medium">Boeken</div>
             </div>
             <div>
-                <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-0.5">Welkom bij BoekControle</h2>
-                <p class="text-sm text-gray-500">Een woord van de oprichter</p>
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-400"><?php echo intval($stats['corrections']); ?></div>
+                <div class="text-xs text-white/40 mt-0.5 uppercase tracking-wider font-medium">Correcties</div>
             </div>
-        </div>
-        <div class="text-gray-600 text-sm sm:text-base leading-relaxed space-y-4 pl-0 sm:pl-14">
-            <p>
-                Welkom op de website van Boekcontrole. Het idee voor deze website is ontstaan nadat ik in de afgelopen jaren als vertaler en controleur van islamitische boeken soms vertaalvergissingen tegenkwam in verschillende boeken. Ik miste een goede, centrale plek waar men deze vergissingen (en correcties) kan terugvinden.
-            </p>
-            <p>
-                Ik ben ervan overtuigd dat het merendeel van deze vergissingen concentratiefouten of typo's zijn, en ik weet zeker dat ik me ook weleens vergist heb in een boek dat ik vertaald heb. Fouten maken is menselijk. Het is echter wel belangrijk dat er een centrale plek is waar men deze vergissingen kan terugvinden, zodat men deze kan corrigeren. Op deze manier helpen we elkaar als ummah bij het verspreiden van correcte kennis van onze mooie religie.
-            </p>
-            <p class="text-gray-800 font-medium">
-                Jullie broeder,<br>
-                Abu Yunus.
-            </p>
         </div>
     </div>
 </section>
 
 
-<!-- ═══════════════════════════════════════════════════════
-     BOOK GRID
-     ═══════════════════════════════════════════════════════ -->
-<section>
-    <!-- Section header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">📚 Overzicht van boeken</h2>
-        <a href="<?php echo site_url('/formulier'); ?>"
-           class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-emerald-600/25 hover:shadow-lg transition-all hover:-translate-y-0.5 no-underline self-start">
-            ✍️ Meld een correctie
-        </a>
-    </div>
+<!-- ═══════════════════════════════════════════════════
+     WELKOMST — Compact, elegant quote
+     ═══════════════════════════════════════════════════ -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6">
 
-    <!-- Search -->
-    <div class="relative max-w-md mb-8">
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">🔍</span>
-        <input type="text" id="bc-search"
-               class="w-full pl-11 pr-10 py-3 border-2 border-gray-200 rounded-xl text-base bg-white text-gray-900 shadow-sm transition-all focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 placeholder:text-gray-400"
-               placeholder="Zoek op boektitel of auteur..." autocomplete="off">
-        <button id="bc-search-clear"
-                class="search-clear absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-gray-100 hover:bg-gray-200 items-center justify-center text-xs text-gray-500 hover:text-gray-700 transition-colors border-none cursor-pointer"
-                aria-label="Wis zoekopdracht">✕</button>
+<section class="py-10 sm:py-12">
+    <div class="relative bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden max-w-2xl">
+        <!-- Green left accent -->
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-emerald-700"></div>
+
+        <div class="px-6 sm:px-8 py-6">
+            <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-3">Van de oprichter</p>
+
+            <p class="text-[14px] sm:text-[15px] text-gray-600 leading-[1.75] mb-3">
+                Welkom op de website van Boekcontrole. Het idee voor deze website is ontstaan nadat ik in de afgelopen jaren als vertaler en controleur van islamitische boeken soms vertaalvergissingen tegenkwam in verschillende boeken. Ik miste een goede, centrale plek waar men deze vergissingen (en correcties) kan terugvinden.
+            </p>
+            <p class="text-[14px] sm:text-[15px] text-gray-600 leading-[1.75] mb-4">
+                Ik ben ervan overtuigd dat het merendeel van deze vergissingen concentratiefouten of typo's zijn, en ik weet zeker dat ik me ook weleens vergist heb in een boek dat ik vertaald heb. Fouten maken is menselijk. Het is echter wel belangrijk dat er een centrale plek is waar men deze vergissingen kan terugvinden, zodat men deze kan corrigeren. Op deze manier helpen we elkaar als ummah bij het verspreiden van correcte kennis van onze mooie religie.
+            </p>
+
+            <div class="flex items-center gap-3 pt-3 border-t border-gray-100">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-xs font-bold">AY</div>
+                <div>
+                    <div class="text-sm font-semibold text-gray-900">Abu Yunus</div>
+                    <div class="text-xs text-gray-400">Oprichter</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     BOEKEN GRID
+     ═══════════════════════════════════════════════════ -->
+<section id="boeken" class="pb-16">
+    <!-- Header + search -->
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 mb-1">Boeken</h2>
+            <p class="text-sm text-gray-500"><?php echo count($books); ?> boek<?php echo count($books) !== 1 ? 'en' : ''; ?> met correctiemeldingen</p>
+        </div>
+        <div class="relative w-full sm:w-72">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="bc-search"
+                   class="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 shadow-sm transition-all focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder:text-gray-400"
+                   placeholder="Zoeken..." autocomplete="off">
+            <button id="bc-search-clear"
+                    class="search-clear absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 items-center justify-center text-[10px] text-gray-500 transition-colors border-none cursor-pointer"
+                    aria-label="Wis">✕</button>
+        </div>
     </div>
 
     <?php if ($books) : ?>
-    <!-- Grid -->
-    <div id="bc-book-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div id="bc-book-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <?php
-        $card_index = 0;
+        $i = 0;
         foreach ($books as $book) :
             setup_postdata($book);
-            $card_index++;
+            $i++;
             $book_id = $book->ID;
             $title   = get_the_title($book_id);
             $author  = get_post_meta($book_id, 'auteur', true);
 
             $corrections = get_posts([
-                'post_type'   => 'correction',
-                'numberposts' => -1,
+                'post_type' => 'correction', 'numberposts' => -1,
                 'post_status' => 'publish',
-                'meta_key'    => 'book_id',
-                'meta_value'  => $book_id,
+                'meta_key' => 'book_id', 'meta_value' => $book_id,
             ]);
 
             $types = [];
-            foreach ($corrections as $correction) {
-                $type = get_post_meta($correction->ID, 'type', true);
-                if (!isset($types[$type])) $types[$type] = 0;
-                $types[$type]++;
+            foreach ($corrections as $c) {
+                $t = get_post_meta($c->ID, 'type', true);
+                if (!isset($types[$t])) $types[$t] = 0;
+                $types[$t]++;
             }
-
             $has_inhoudelijk = isset($types['inhoudelijk']);
         ?>
-        <article class="group bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:shadow-emerald-500/[0.07] hover:-translate-y-1 transition-all duration-300 animate-fade-in-up stagger-<?php echo min($card_index, 12); ?> <?php echo $has_inhoudelijk ? 'border-l-4 border-l-red-400' : ''; ?>"
-                 data-title="<?php echo esc_attr($title); ?>"
-                 data-author="<?php echo esc_attr($author); ?>">
+        <a href="<?php echo get_permalink($book_id); ?>"
+           class="book-card group bg-white border border-gray-200/80 rounded-xl overflow-hidden flex flex-col shadow-sm hover:-translate-y-0.5 transition-all duration-200 no-underline animate-fade-in-up stagger-<?php echo min($i, 9); ?> <?php echo $has_inhoudelijk ? 'ring-1 ring-red-300' : ''; ?>"
+           data-title="<?php echo esc_attr($title); ?>"
+           data-author="<?php echo esc_attr($author); ?>">
 
             <!-- Cover -->
-            <div class="relative bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center p-6 min-h-[12rem]">
+            <div class="relative bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center py-6 px-4 h-44">
                 <?php if (has_post_thumbnail($book_id)) : ?>
                     <?php echo get_the_post_thumbnail($book_id, 'medium', [
-                        'class' => 'max-h-44 w-auto object-contain rounded shadow-md group-hover:scale-[1.03] transition-transform duration-300'
+                        'class' => 'max-h-36 w-auto object-contain drop-shadow-md group-hover:scale-[1.04] transition-transform duration-300'
                     ]); ?>
                 <?php else : ?>
-                    <span class="text-5xl opacity-25">📖</span>
+                    <div class="text-4xl opacity-20">📖</div>
+                <?php endif; ?>
+
+                <?php if ($has_inhoudelijk) : ?>
+                    <div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                        ⚠️ Inhoudelijk
+                    </div>
                 <?php endif; ?>
             </div>
 
-            <!-- Body -->
-            <div class="p-5 flex-1 flex flex-col">
-                <h3 class="text-lg font-bold text-gray-900 mb-1 leading-snug"><?php echo esc_html($title); ?></h3>
-                <p class="text-sm text-gray-500 mb-3"><?php echo esc_html($author ?: 'Auteur onbekend'); ?></p>
+            <!-- Info -->
+            <div class="px-4 pt-3 pb-4 flex-1 flex flex-col">
+                <h3 class="text-[15px] font-bold text-gray-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2"><?php echo esc_html($title); ?></h3>
+                <p class="text-xs text-gray-400 mb-3"><?php echo esc_html($author ?: 'Auteur onbekend'); ?></p>
 
-                <p class="text-sm text-gray-600 mb-3 font-medium">
-                    <strong class="text-gray-900"><?php echo count($corrections); ?></strong>
-                    correctie<?php echo count($corrections) !== 1 ? 's' : ''; ?> gemeld
-                </p>
-
-                <?php if (!empty($types)) : ?>
-                <div class="flex flex-wrap gap-1.5 mb-4">
-                    <?php foreach ($types as $type => $count) : ?>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold <?php echo bc_type_badge_classes($type); ?>">
-                            <?php echo ucfirst(esc_html($type)); ?>: <?php echo $count; ?>
-                        </span>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-
-                <!-- Action -->
-                <div class="mt-auto pt-4 border-t border-gray-100">
-                    <a href="<?php echo get_permalink($book_id); ?>"
-                       class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-500 hover:gap-3 transition-all no-underline">
-                        Bekijk correcties <span>→</span>
-                    </a>
+                <div class="mt-auto flex items-center justify-between">
+                    <div class="flex flex-wrap gap-1">
+                        <?php foreach ($types as $type => $count) : ?>
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($type); ?>">
+                                <?php echo ucfirst(esc_html($type)); ?> <?php echo $count; ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                    <span class="text-gray-300 group-hover:text-emerald-500 transition-colors text-sm">→</span>
                 </div>
             </div>
-        </article>
+        </a>
         <?php endforeach; wp_reset_postdata(); ?>
     </div>
 
-    <!-- No search results -->
-    <div id="bc-no-results" class="no-results text-center py-16 text-gray-400">
-        <span class="block text-4xl mb-3">🔎</span>
-        <p class="text-base">Geen boeken gevonden voor deze zoekopdracht.</p>
+    <!-- No results -->
+    <div id="bc-no-results" class="no-results text-center py-12 text-gray-400">
+        <p class="text-sm">Geen boeken gevonden.</p>
     </div>
 
     <?php else : ?>
-    <!-- Empty state -->
-    <div class="text-center py-20 text-gray-400">
-        <span class="block text-5xl mb-4">📚</span>
-        <p class="text-base">Er zijn nog geen boeken toegevoegd.</p>
+    <div class="text-center py-16 text-gray-400">
+        <div class="text-4xl mb-3 opacity-40">📚</div>
+        <p class="text-sm">Er zijn nog geen boeken toegevoegd.</p>
     </div>
     <?php endif; ?>
 </section>
+
+</div><!-- /max-w-6xl -->
 
 <?php get_footer(); ?>
