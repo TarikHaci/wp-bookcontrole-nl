@@ -249,6 +249,7 @@ function boekcontrole_book_meta_box_html($post) {
         .bc-admin-input:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 2px rgba(5,150,105,0.15); }
         .bc-admin-info { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #166534; }
         .bc-admin-stat { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border-radius: 6px; padding: 6px 12px; font-size: 13px; color: #475569; font-weight: 500; }
+        a.bc-admin-stat:hover { background: #e2e8f0; color: #1e293b; }
     </style>
 
     <div class="bc-admin-info">
@@ -270,7 +271,9 @@ function boekcontrole_book_meta_box_html($post) {
             <?php
             $correction_count = count(get_posts(['post_type'=>'correction','numberposts'=>-1,'post_status'=>['publish','pending'],'meta_key'=>'book_id','meta_value'=>$post->ID,'fields'=>'ids']));
             ?>
-            <span class="bc-admin-stat">📝 <?php echo $correction_count; ?> correcties</span>
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=correction&bc_book_id=' . $post->ID)); ?>" class="bc-admin-stat" style="text-decoration: none;">
+                📝 <?php echo $correction_count; ?> correcties
+            </a>
         </div>
     </div>
     <?php endif; ?>
@@ -553,7 +556,8 @@ function boekcontrole_book_column_data($column, $post_id) {
         case 'correcties_count':
             $c = count(get_posts(['post_type'=>'correction','numberposts'=>-1,'post_status'=>['publish','pending'],'meta_key'=>'book_id','meta_value'=>$post_id,'fields'=>'ids']));
             $bg = $c > 0 ? '#059669' : '#d1d5db';
-            echo "<span style='background:{$bg};color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;'>{$c}</span>";
+            $link = admin_url('edit.php?post_type=correction&bc_book_id=' . $post_id);
+            echo "<a href='" . esc_url($link) . "' title='Bekijk correcties voor dit boek' class='bc-admin-badge' style='text-decoration:none;'><span style='background:{$bg};color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;display:inline-block;transition:all 0.1s ease-in-out;'>{$c}</span></a>";
             break;
         case 'views':
             $v = boekcontrole_get_views($post_id);
@@ -641,6 +645,7 @@ function boekcontrole_admin_styles() {
         .column-bladzijde { width: 60px; }
         .column-druk { width: 100px; }
         .column-type_fout { width: 110px; }
+        .bc-admin-badge:hover span { opacity: 0.85; transform: scale(1.05); }
     </style>';
 }
 add_action('admin_head', 'boekcontrole_admin_styles');
@@ -651,6 +656,64 @@ function boekcontrole_title_placeholder($title, $post) {
     return $title;
 }
 add_filter('enter_title_here', 'boekcontrole_title_placeholder', 10, 2);
+
+
+/* ================================================================
+   9b. ADMIN FILTERS & ROW ACTIONS
+   ================================================================ */
+
+// Add "Correcties bekijken" hover action under book titles
+function boekcontrole_book_row_actions($actions, $post) {
+    if ($post->post_type === 'book') {
+        $link = admin_url('edit.php?post_type=correction&bc_book_id=' . $post->ID);
+        $actions['view_corrections'] = '<a href="' . esc_url($link) . '" aria-label="Bekijk correcties voor dit boek">🔍 Correcties bekijken</a>';
+    }
+    return $actions;
+}
+add_filter('post_row_actions', 'boekcontrole_book_row_actions', 10, 2);
+
+// Add a book dropdown filter to the corrections list
+function boekcontrole_admin_corrections_filter_dropdown() {
+    global $typenow;
+    if ($typenow === 'correction') {
+        $selected = isset($_GET['bc_book_id']) ? intval($_GET['bc_book_id']) : 0;
+        $books = get_posts([
+            'post_type'   => 'book',
+            'numberposts' => -1,
+            'post_status' => ['publish', 'pending', 'draft'],
+            'orderby'     => 'title',
+            'order'       => 'ASC'
+        ]);
+        
+        echo '<select name="bc_book_id">';
+        echo '<option value="">' . esc_html__('Alle boeken', 'boekcontrole') . '</option>';
+        foreach ($books as $b) {
+            $author = get_post_meta($b->ID, 'auteur', true);
+            $suffix = $author ? ' (' . $author . ')' : '';
+            echo '<option value="' . $b->ID . '" ' . selected($selected, $b->ID, false) . '>' . esc_html($b->post_title . $suffix) . '</option>';
+        }
+        echo '</select>';
+    }
+}
+add_action('restrict_manage_posts', 'boekcontrole_admin_corrections_filter_dropdown');
+
+// Apply the book filter query to corrections list
+function boekcontrole_filter_corrections_by_book($query) {
+    global $pagenow;
+    if (is_admin() && $pagenow === 'edit.php' && $query->is_main_query() && isset($_GET['post_type']) && $_GET['post_type'] === 'correction') {
+        if (isset($_GET['bc_book_id']) && !empty($_GET['bc_book_id'])) {
+            $book_id = intval($_GET['bc_book_id']);
+            $meta_query = $query->get('meta_query') ?: [];
+            $meta_query[] = [
+                'key'     => 'book_id',
+                'value'   => $book_id,
+                'compare' => '='
+            ];
+            $query->set('meta_query', $meta_query);
+        }
+    }
+}
+add_action('pre_get_posts', 'boekcontrole_filter_corrections_by_book');
 
 
 /* ================================================================
