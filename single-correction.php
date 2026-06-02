@@ -8,10 +8,6 @@ $druk          = get_post_meta($correction_id, 'druk', true);
 $blz           = get_post_meta($correction_id, 'bladzijde', true);
 $desc          = get_post_meta($correction_id, 'beschrijving', true);
 
-// Fallback to meta foto if thumbnail is not set (for older entries)
-$foto_meta = get_post_meta($correction_id, 'foto', true);
-$foto      = has_post_thumbnail($correction_id) ? get_post_thumbnail_id($correction_id) : $foto_meta;
-
 $book_title = $book_id ? get_the_title($book_id) : 'Boek onbekend';
 $book_link  = $book_id ? get_permalink($book_id) : home_url();
 $author     = $book_id ? get_post_meta($book_id, 'auteur', true) : '';
@@ -84,19 +80,25 @@ $author     = $book_id ? get_post_meta($book_id, 'auteur', true) : '';
                 </div>
             </div>
 
-            <!-- Afbeelding -->
-            <?php if ($foto) : $full_url = wp_get_attachment_url($foto); ?>
+            <!-- Afbeeldingen -->
+            <?php $fotos = bc_get_correction_fotos($correction_id); if (!empty($fotos)) : ?>
             <div>
                 <h2 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    Bijgevoegde afbeelding
+                    Bijgevoegde afbeelding<?php echo count($fotos) > 1 ? 'en' : ''; ?> (<?php echo count($fotos); ?>)
                 </h2>
-                <div class="border border-gray-200 p-2 rounded-xl inline-block shadow-sm">
-                    <?php echo wp_get_attachment_image($foto, 'large', false, [
-                        'class' => 'rounded-lg max-h-[500px] w-auto cursor-zoom-in hover:opacity-90 transition-opacity',
-                        'data-lightbox' => 'true', 
-                        'data-full' => $full_url,
-                    ]); ?>
+                <div class="grid gap-3 <?php echo count($fotos) > 1 ? 'grid-cols-2' : 'grid-cols-1'; ?>">
+                    <?php foreach ($fotos as $foto_id) :
+                        $full_url = wp_get_attachment_url($foto_id);
+                    ?>
+                        <div class="border border-gray-200 p-2 rounded-xl inline-block shadow-sm">
+                            <?php echo wp_get_attachment_image($foto_id, 'large', false, [
+                                'class' => 'rounded-lg max-h-[500px] w-auto cursor-zoom-in hover:opacity-90 transition-opacity',
+                                'data-lightbox' => 'true',
+                                'data-full' => $full_url,
+                            ]); ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
             <?php endif; ?>

@@ -66,16 +66,18 @@
     }
   }
 
-  /* ── 3. Drag & Drop Upload ── */
+  /* ── 3. Multi-file Drag & Drop Upload ── */
   function initUpload() {
     const zone = document.getElementById('bc-upload-zone');
     const input = document.getElementById('bc-upload-input');
     const preview = document.getElementById('bc-upload-preview');
-    const previewImg = document.getElementById('bc-upload-preview-img');
     if (!zone || !input) return;
 
+    // Track selected files with a DataTransfer to allow adding/removing
+    let selectedFiles = new DataTransfer();
+
     zone.addEventListener('click', (e) => {
-      if (e.target !== input) input.click();
+      if (e.target !== input && !e.target.closest('.bc-preview-item')) input.click();
     });
 
     ['dragenter', 'dragover'].forEach(evt => {
@@ -87,22 +89,85 @@
 
     zone.addEventListener('drop', (e) => {
       const files = e.dataTransfer.files;
-      if (files.length) { input.files = files; showPreview(files[0]); }
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].type.startsWith('image/')) selectedFiles.items.add(files[i]);
+      }
+      syncInput();
+      renderPreviews();
     });
 
     input.addEventListener('change', () => {
-      if (input.files.length) showPreview(input.files[0]);
+      for (let i = 0; i < input.files.length; i++) {
+        selectedFiles.items.add(input.files[i]);
+      }
+      syncInput();
+      renderPreviews();
     });
 
-    function showPreview(file) {
-      if (!file.type.startsWith('image/') || !preview || !previewImg) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        previewImg.src = e.target.result;
-        preview.classList.add('is-visible');
-      };
-      reader.readAsDataURL(file);
+    function syncInput() {
+      input.files = selectedFiles.files;
     }
+
+    function removeFile(index) {
+      const newDt = new DataTransfer();
+      for (let i = 0; i < selectedFiles.files.length; i++) {
+        if (i !== index) newDt.items.add(selectedFiles.files[i]);
+      }
+      selectedFiles = newDt;
+      syncInput();
+      renderPreviews();
+    }
+
+    function renderPreviews() {
+      if (!preview) return;
+      preview.innerHTML = '';
+
+      if (selectedFiles.files.length === 0) {
+        preview.classList.remove('is-visible');
+        return;
+      }
+
+      preview.classList.add('is-visible');
+
+      const grid = document.createElement('div');
+      grid.className = 'bc-preview-grid';
+
+      for (let i = 0; i < selectedFiles.files.length; i++) {
+        const file = selectedFiles.files[i];
+        const item = document.createElement('div');
+        item.className = 'bc-preview-item';
+
+        const img = document.createElement('img');
+        const reader = new FileReader();
+        reader.onload = (e) => { img.src = e.target.result; };
+        reader.readAsDataURL(file);
+        img.alt = file.name;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'bc-preview-remove';
+        removeBtn.innerHTML = '✕';
+        removeBtn.title = 'Verwijder';
+        const idx = i;
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeFile(idx);
+        });
+
+        item.appendChild(img);
+        item.appendChild(removeBtn);
+        grid.appendChild(item);
+      }
+
+      preview.appendChild(grid);
+    }
+
+    // Expose reset for form submit
+    window._bcResetUpload = function() {
+      selectedFiles = new DataTransfer();
+      syncInput();
+      if (preview) { preview.innerHTML = ''; preview.classList.remove('is-visible'); }
+    };
   }
 
   /* ── 4. Lightbox ── */
@@ -182,8 +247,7 @@
           alert.className = 'bc-alert p-4 rounded-xl text-sm font-medium flex items-start gap-3 mb-6 bg-emerald-50 text-emerald-800 border border-emerald-200 animate-slide-down';
           alert.innerHTML = '✅ ' + data.data.message;
           form.reset();
-          const preview = document.getElementById('bc-upload-preview');
-          if (preview) preview.classList.remove('is-visible');
+          if (window._bcResetUpload) window._bcResetUpload();
           const slide = document.getElementById('bc-new-book-fields');
           if (slide) slide.classList.remove('is-open');
         } else {

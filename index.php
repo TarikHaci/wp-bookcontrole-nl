@@ -148,7 +148,7 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
                 </div>
                 <div>
                     <h2 class="text-base font-bold text-gray-900">BoekControle.nl</h2>
-                    <p class="text-xs text-gray-500">Voorwoord van de oprichter Ustaadh Bilaal Abu Yunus (حفظه الله)</p>
+                    <p class="text-xs text-gray-500">Voorwoord van de oprichter Drs. Bilaal Abu Yunus (حفظه الله)</p>
                 </div>
             </div>
 

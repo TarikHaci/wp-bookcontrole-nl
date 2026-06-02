@@ -44,11 +44,11 @@ get_header();
             <div>
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
                     <span class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-lg">👤</span>
-                    Ustaadh Bilaal Abu Yunus (حفظه الله)
+                    Drs. Bilaal Abu Yunus (حفظه الله)
                 </h2>
                 <div class="text-gray-600 text-sm sm:text-base leading-relaxed space-y-4 pl-0 sm:pl-[3.25rem]">
                     <p>
-                        Deze website staat onder toezicht van <strong class="text-gray-800">Ustaadh Bilaal Abu Yunus (حفظه الله)</strong>. Hij is ruim tien jaar werkzaam als vertaler en controleur van islamitische boeken.
+                        Deze website staat onder toezicht van <strong class="text-gray-800">Drs. Bilaal Abu Yunus (حفظه الله)</strong>. Hij is ruim tien jaar werkzaam als vertaler en controleur van islamitische boeken.
                     </p>
 
                     <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-3">
@@ -68,7 +68,7 @@ get_header();
                         <div class="flex items-start gap-3">
                             <span class="text-emerald-500 mt-0.5">🏛️</span>
                             <p class="text-sm text-gray-600">
-                                Hij heeft in deze periode tevens een vierjarige <strong class="text-gray-700">bacheloropleiding</strong> afgerond in de <strong class="text-gray-700">Arabische taalwetenschappen</strong> aan de Imam Muhammad universiteit te Riyad.
+                                Hij heeft in deze periode tevens een vierjarige <strong class="text-gray-700">bacheloropleiding</strong> afgerond in de <strong class="text-gray-700">Arabische taalwetenschappen</strong> aan de Imam Muhammad ibn Saud-universiteit te Riyad.
                             </p>
                         </div>
                     </div>

@@ -258,7 +258,7 @@ function boekcontrole_book_meta_box_html($post) {
     <div class="bc-admin-field">
         <label for="bc_auteur">✍️ Auteur</label>
         <input type="text" id="bc_auteur" name="auteur" value="<?php echo esc_attr($auteur); ?>"
-               class="bc-admin-input" placeholder="Bijv. Imaam an-Nawawie">
+               class="bc-admin-input" placeholder="Bijv. Imaam al-Bukhari">
         <p class="description">De naam van de auteur of vertaler van het boek.</p>
     </div>
 
@@ -294,6 +294,15 @@ function boekcontrole_correction_meta_boxes() {
     add_meta_box('correction_details', '📝 Correctie Details', 'boekcontrole_correction_meta_box_html', 'correction', 'normal', 'high');
     remove_post_type_support('correction', 'editor');
 }
+
+// Enqueue WP media library on correction edit screens
+function boekcontrole_correction_admin_scripts($hook) {
+    global $post_type;
+    if ($post_type === 'correction' && in_array($hook, ['post.php', 'post-new.php'])) {
+        wp_enqueue_media();
+    }
+}
+add_action('admin_enqueue_scripts', 'boekcontrole_correction_admin_scripts');
 add_action('add_meta_boxes', 'boekcontrole_correction_meta_boxes');
 
 function boekcontrole_correction_meta_box_html($post) {
@@ -334,7 +343,24 @@ function boekcontrole_correction_meta_box_html($post) {
         .bc-admin-type-pill.type-inhoudelijk input:checked + label { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
         .bc-admin-type-pill.type-typo input:checked + label { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
         .bc-admin-type-pill.type-misvertaling input:checked + label { border-color: #8b5cf6; background: #f5f3ff; color: #5b21b6; }
-        .bc-admin-foto-preview img { max-width: 200px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        /* Photo gallery admin styles */
+        .bc-admin-gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .bc-admin-gallery-item { position: relative; width: 120px; height: 120px; border-radius: 8px; overflow: hidden; border: 2px solid #e5e7eb; background: #f9fafb; }
+        .bc-admin-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .bc-admin-gallery-item .bc-admin-remove-foto {
+            position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(239,68,68,0.85); color: #fff; border: none; font-size: 14px; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .bc-admin-gallery-item:hover .bc-admin-remove-foto { opacity: 1; }
+        .bc-admin-gallery-item:hover { border-color: #059669; }
+        .bc-admin-add-fotos {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+            background: #059669; color: #fff; border: none; border-radius: 6px;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+        }
+        .bc-admin-add-fotos:hover { background: #047857; }
     </style>
 
     <div class="bc-admin-info">
@@ -391,6 +417,82 @@ function boekcontrole_correction_meta_box_html($post) {
         <textarea id="bc_beschrijving" name="beschrijving" class="bc-admin-textarea"
                   placeholder="Beschrijf de fout zo duidelijk mogelijk..."><?php echo esc_textarea($beschrijving); ?></textarea>
     </div>
+
+    <!-- Afbeeldingen gallery -->
+    <div class="bc-admin-field">
+        <label>📷 Afbeeldingen</label>
+        <p class="description" style="margin-bottom:10px;">Voeg een of meerdere afbeeldingen toe via de WordPress mediabibliotheek.</p>
+        <?php
+        $foto_ids = bc_get_correction_fotos($post->ID);
+        ?>
+        <div id="bc-admin-fotos-gallery" class="bc-admin-gallery">
+            <?php foreach ($foto_ids as $fid) : ?>
+                <div class="bc-admin-gallery-item" data-id="<?php echo $fid; ?>">
+                    <?php echo wp_get_attachment_image($fid, 'thumbnail'); ?>
+                    <button type="button" class="bc-admin-remove-foto" title="Verwijder">&times;</button>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <input type="hidden" id="bc-admin-fotos-ids" name="correction_fotos_ids" value="<?php echo esc_attr(implode(',', $foto_ids)); ?>">
+        <button type="button" id="bc-admin-add-fotos" class="bc-admin-add-fotos">📷 Afbeeldingen toevoegen</button>
+    </div>
+
+    <script>
+    jQuery(document).ready(function($) {
+        var gallery = $('#bc-admin-fotos-gallery');
+        var hiddenInput = $('#bc-admin-fotos-ids');
+
+        function getIds() {
+            var val = hiddenInput.val().trim();
+            return val ? val.split(',').map(Number).filter(Boolean) : [];
+        }
+
+        function setIds(ids) {
+            hiddenInput.val(ids.join(','));
+        }
+
+        // Remove photo
+        gallery.on('click', '.bc-admin-remove-foto', function(e) {
+            e.preventDefault();
+            var item = $(this).closest('.bc-admin-gallery-item');
+            var removeId = parseInt(item.data('id'));
+            var ids = getIds().filter(function(id) { return id !== removeId; });
+            setIds(ids);
+            item.fadeOut(200, function() { $(this).remove(); });
+        });
+
+        // Add photos via media library
+        $('#bc-admin-add-fotos').on('click', function(e) {
+            e.preventDefault();
+            var frame = wp.media({
+                title: 'Afbeeldingen selecteren',
+                button: { text: 'Toevoegen aan correctie' },
+                multiple: true,
+                library: { type: 'image' }
+            });
+
+            frame.on('select', function() {
+                var selection = frame.state().get('selection');
+                var ids = getIds();
+                selection.each(function(attachment) {
+                    var att = attachment.toJSON();
+                    if (ids.indexOf(att.id) === -1) {
+                        ids.push(att.id);
+                        var thumb = att.sizes && att.sizes.thumbnail ? att.sizes.thumbnail.url : att.url;
+                        var html = '<div class="bc-admin-gallery-item" data-id="' + att.id + '">' +
+                                   '<img src="' + thumb + '" alt="">' +
+                                   '<button type="button" class="bc-admin-remove-foto" title="Verwijder">&times;</button>' +
+                                   '</div>';
+                        gallery.append(html);
+                    }
+                });
+                setIds(ids);
+            });
+
+            frame.open();
+        });
+    });
+    </script>
     <?php
 }
 
@@ -406,6 +508,20 @@ function boekcontrole_save_correction_meta($post_id) {
     if (isset($_POST['beschrijving']) && !empty($_POST['beschrijving'])) {
         $title = 'Correctie: ' . wp_trim_words(wp_strip_all_tags($_POST['beschrijving']), 10, '...');
         wp_update_post(['ID' => $post_id, 'post_title' => $title]);
+    }
+
+    // Save correction photos from admin gallery
+    if (isset($_POST['correction_fotos_ids'])) {
+        $raw = sanitize_text_field($_POST['correction_fotos_ids']);
+        $ids = array_filter(array_map('intval', explode(',', $raw)));
+        if (!empty($ids)) {
+            update_post_meta($post_id, 'correction_fotos', json_encode(array_values($ids)));
+            // Set first image as post thumbnail for backward compat
+            set_post_thumbnail($post_id, $ids[0]);
+        } else {
+            delete_post_meta($post_id, 'correction_fotos');
+            delete_post_thumbnail($post_id);
+        }
     }
 }
 add_action('save_post_correction', 'boekcontrole_save_correction_meta');
@@ -560,14 +676,28 @@ function boekcontrole_handle_correction_ajax() {
     }
     update_post_meta($cid, 'book_id', $book_id);
 
-    if (!empty($_FILES['foto']['name'])) {
+    if (!empty($_FILES['foto']['name'][0])) {
         require_once(ABSPATH.'wp-admin/includes/file.php');
         require_once(ABSPATH.'wp-admin/includes/media.php');
         require_once(ABSPATH.'wp-admin/includes/image.php');
-        $aid = media_handle_upload('foto', $cid);
-        if (!is_wp_error($aid)) {
-            set_post_thumbnail($cid, $aid);
+        $foto_ids = [];
+        $file_count = count($_FILES['foto']['name']);
+        for ($i = 0; $i < $file_count; $i++) {
+            if (empty($_FILES['foto']['name'][$i])) continue;
+            $_FILES['foto_single'] = [
+                'name'     => $_FILES['foto']['name'][$i],
+                'type'     => $_FILES['foto']['type'][$i],
+                'tmp_name' => $_FILES['foto']['tmp_name'][$i],
+                'error'    => $_FILES['foto']['error'][$i],
+                'size'     => $_FILES['foto']['size'][$i],
+            ];
+            $aid = media_handle_upload('foto_single', $cid);
+            if (!is_wp_error($aid)) {
+                $foto_ids[] = $aid;
+                if (count($foto_ids) === 1) set_post_thumbnail($cid, $aid);
+            }
         }
+        if (!empty($foto_ids)) update_post_meta($cid, 'correction_fotos', json_encode($foto_ids));
     }
 
     wp_send_json_success(['message' => 'Jazaak Allaahu khayran! Uw correctie is ontvangen en wordt beoordeeld.']);
@@ -601,4 +731,24 @@ function bc_type_border_class($type) {
         case 'misvertaling': return 'border-l-violet-500';
         default:             return 'border-l-gray-300';
     }
+}
+
+/**
+ * Get all photo attachment IDs for a correction.
+ * Supports new multi-photo meta and falls back to legacy single thumbnail.
+ */
+function bc_get_correction_fotos($correction_id) {
+    // New multi-photo meta
+    $fotos_json = get_post_meta($correction_id, 'correction_fotos', true);
+    if ($fotos_json) {
+        $ids = json_decode($fotos_json, true);
+        if (is_array($ids) && !empty($ids)) return $ids;
+    }
+    // Legacy: single thumbnail or foto meta
+    if (has_post_thumbnail($correction_id)) {
+        return [get_post_thumbnail_id($correction_id)];
+    }
+    $foto_meta = get_post_meta($correction_id, 'foto', true);
+    if ($foto_meta) return [(int)$foto_meta];
+    return [];
 }

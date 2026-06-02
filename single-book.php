@@ -92,8 +92,7 @@ foreach ($corrections as $c) {
                 $druk = get_post_meta($correction->ID, 'druk', true);
                 $blz  = get_post_meta($correction->ID, 'bladzijde', true);
                 $desc = get_post_meta($correction->ID, 'beschrijving', true);
-                $foto_meta = get_post_meta($correction->ID, 'foto', true);
-                $foto = has_post_thumbnail($correction->ID) ? get_post_thumbnail_id($correction->ID) : $foto_meta;
+                $fotos = bc_get_correction_fotos($correction->ID);
                 $permalink = get_permalink($correction->ID);
             ?>
                 <div id="correctie-<?php echo $correction->ID; ?>" 
@@ -119,14 +118,16 @@ foreach ($corrections as $c) {
                         </div>
                     </div>
                     <p class="text-sm text-gray-700 leading-relaxed"><?php echo esc_html($desc); ?></p>
-                    <?php if ($foto) :
-                        $full = wp_get_attachment_url($foto);
-                    ?>
-                        <div class="mt-2">
-                            <?php echo wp_get_attachment_image($foto, 'medium', false, [
-                                'class' => 'rounded-md w-full h-auto max-h-40 object-cover cursor-pointer hover:opacity-80 transition',
-                                'data-lightbox' => 'true', 'data-full' => $full,
-                            ]); ?>
+                    <?php if (!empty($fotos)) : ?>
+                        <div class="mt-2 flex gap-2 overflow-x-auto">
+                            <?php foreach ($fotos as $foto_id) :
+                                $full = wp_get_attachment_url($foto_id);
+                            ?>
+                                <?php echo wp_get_attachment_image($foto_id, 'medium', false, [
+                                    'class' => 'rounded-md h-32 w-auto object-cover cursor-pointer hover:opacity-80 transition flex-shrink-0',
+                                    'data-lightbox' => 'true', 'data-full' => $full,
+                                ]); ?>
+                            <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -151,8 +152,7 @@ foreach ($corrections as $c) {
                         $druk = get_post_meta($correction->ID, 'druk', true);
                         $blz  = get_post_meta($correction->ID, 'bladzijde', true);
                         $desc = get_post_meta($correction->ID, 'beschrijving', true);
-                        $foto_meta = get_post_meta($correction->ID, 'foto', true);
-                        $foto = has_post_thumbnail($correction->ID) ? get_post_thumbnail_id($correction->ID) : $foto_meta;
+                        $fotos = bc_get_correction_fotos($correction->ID);
                         $permalink = get_permalink($correction->ID);
                     ?>
                         <tr id="correctie-<?php echo $correction->ID; ?>" class="hover:bg-gray-50/60 transition-colors target:bg-emerald-50 group" data-correction-type="<?php echo esc_attr($type); ?>">
@@ -177,13 +177,17 @@ foreach ($corrections as $c) {
                             </td>
                             <td class="px-4 py-3 text-gray-600 max-w-sm"><?php echo esc_html($desc); ?></td>
                             <td class="px-4 py-3">
-                                <?php if ($foto) :
-                                    $full = wp_get_attachment_url($foto);
-                                    echo wp_get_attachment_image($foto, 'thumbnail', false, [
-                                        'class' => 'w-10 h-10 rounded object-cover cursor-pointer hover:scale-110 transition-transform shadow-sm',
-                                        'data-lightbox' => 'true', 'data-full' => $full,
-                                    ]);
-                                else : ?>
+                                <?php if (!empty($fotos)) : ?>
+                                    <div class="flex gap-1 flex-wrap">
+                                        <?php foreach ($fotos as $foto_id) :
+                                            $full = wp_get_attachment_url($foto_id);
+                                            echo wp_get_attachment_image($foto_id, 'thumbnail', false, [
+                                                'class' => 'w-10 h-10 rounded object-cover cursor-pointer hover:scale-110 transition-transform shadow-sm',
+                                                'data-lightbox' => 'true', 'data-full' => $full,
+                                            ]);
+                                        endforeach; ?>
+                                    </div>
+                                <?php else : ?>
                                     <span class="text-gray-300">—</span>
                                 <?php endif; ?>
                             </td>
