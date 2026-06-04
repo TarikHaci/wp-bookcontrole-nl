@@ -23,7 +23,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-gray-300 text-xs font-semibold uppercase tracking-[0.1em] mb-4">Gemaakt door</h4>
+                    <h4 class="text-gray-300 text-xs font-semibold uppercase tracking-[0.1em] mb-4">Gebouwd door</h4>
                     <a href="https://websiteexpert.nl" target="_blank" rel="noopener" class="text-[13px] text-gray-500 hover:text-emerald-400 transition-colors no-underline">WebsiteExpert.nl ↗</a>
                 </div>
             </div>

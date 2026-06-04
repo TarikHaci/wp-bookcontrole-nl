@@ -12,7 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving']) && !w
             $book_id = intval($_POST['book_select']);
         }
         $cid = wp_insert_post(['post_type'=>'correction','post_status'=>'pending','post_title'=>'Correctie: '.wp_strip_all_tags($_POST['beschrijving'])]);
-        foreach (['bladzijde','druk','type','beschrijving'] as $f) { if (isset($_POST[$f])) update_post_meta($cid,$f,sanitize_text_field($_POST[$f])); }
+        foreach (['bladzijde','druk','beschrijving'] as $f) { if (isset($_POST[$f])) update_post_meta($cid,$f,sanitize_text_field($_POST[$f])); }
+        if (isset($_POST['type'])) {
+            $type_val = is_array($_POST['type']) ? array_map('sanitize_text_field', $_POST['type']) : sanitize_text_field($_POST['type']);
+            update_post_meta($cid, 'type', $type_val);
+        }
         update_post_meta($cid,'book_id',$book_id);
         if (!empty($_FILES['foto']['name'][0])) {
             require_once(ABSPATH.'wp-admin/includes/file.php'); require_once(ABSPATH.'wp-admin/includes/media.php'); require_once(ABSPATH.'wp-admin/includes/image.php');
@@ -62,11 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving']) && !w
     <div id="bc-new-book-fields" class="slide-content bg-gray-50 rounded-lg px-4 border border-gray-200 space-y-3">
         <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Boektitel</label>
-            <input type="text" name="nieuw_boek_titel" class="w-full py-2 px-3 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" placeholder="Bijv. Sahih al-Bukhari">
+            <input type="text" name="nieuw_boek_titel" class="w-full py-2 px-3 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" placeholder="Bijv. Cursus Arabisch 1">
         </div>
         <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Auteur</label>
-            <input type="text" name="nieuw_boek_auteur" class="w-full py-2 px-3 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" placeholder="Bijv. Imaam al-Bukhari">
+            <input type="text" name="nieuw_boek_auteur" class="w-full py-2 px-3 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" placeholder="Bijv. v Abdur-Rahiem">
         </div>
     </div>
 
@@ -89,19 +93,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beschrijving']) && !w
         <label class="block text-xs font-semibold text-gray-600 mb-2">Type fout *</label>
         <div class="flex flex-wrap gap-2">
             <div class="relative">
-                <input type="radio" name="type" id="type-inhoudelijk" value="inhoudelijk" class="type-radio type-radio-inhoudelijk absolute opacity-0 w-0 h-0" required>
+                <input type="checkbox" name="type[]" id="type-inhoudelijk" value="inhoudelijk" class="type-radio type-radio-inhoudelijk absolute opacity-0 w-0 h-0">
                 <label for="type-inhoudelijk" class="inline-flex items-center gap-1.5 px-3.5 py-2 border-2 border-gray-200 rounded-lg text-xs font-medium cursor-pointer transition-all bg-white hover:border-gray-300">
                     ⚠️ Inhoudelijk
                 </label>
             </div>
             <div class="relative">
-                <input type="radio" name="type" id="type-typo" value="typo" class="type-radio type-radio-typo absolute opacity-0 w-0 h-0">
+                <input type="checkbox" name="type[]" id="type-typo" value="typo" class="type-radio type-radio-typo absolute opacity-0 w-0 h-0">
                 <label for="type-typo" class="inline-flex items-center gap-1.5 px-3.5 py-2 border-2 border-gray-200 rounded-lg text-xs font-medium cursor-pointer transition-all bg-white hover:border-gray-300">
                     ✏️ Typo
                 </label>
             </div>
             <div class="relative">
-                <input type="radio" name="type" id="type-misvertaling" value="misvertaling" class="type-radio type-radio-misvertaling absolute opacity-0 w-0 h-0">
+                <input type="checkbox" name="type[]" id="type-misvertaling" value="misvertaling" class="type-radio type-radio-misvertaling absolute opacity-0 w-0 h-0">
                 <label for="type-misvertaling" class="inline-flex items-center gap-1.5 px-3.5 py-2 border-2 border-gray-200 rounded-lg text-xs font-medium cursor-pointer transition-all bg-white hover:border-gray-300">
                     🔄 Misvertaling
                 </label>

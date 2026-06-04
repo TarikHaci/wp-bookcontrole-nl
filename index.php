@@ -74,13 +74,16 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
             $types = [];
             foreach ($corrections as $c) {
                 $t = get_post_meta($c->ID, 'type', true);
-                if (!isset($types[$t])) $types[$t] = 0;
-                $types[$t]++;
+                $c_types = is_array($t) ? $t : ($t ? [$t] : []);
+                foreach ($c_types as $tt) {
+                    if (!isset($types[$tt])) $types[$tt] = 0;
+                    $types[$tt]++;
+                }
             }
             $has_inhoudelijk = isset($types['inhoudelijk']);
         ?>
         <a href="<?php echo get_permalink($book_id); ?>"
-           class="book-card group bg-white border border-gray-200/80 rounded-xl overflow-hidden flex flex-col shadow-sm hover:-translate-y-0.5 transition-all duration-200 no-underline animate-fade-in-up stagger-<?php echo min($i, 9); ?> <?php echo $has_inhoudelijk ? 'ring-1 ring-red-300' : ''; ?>"
+           class="book-card group bg-white border border-gray-200/80 rounded-xl overflow-hidden flex flex-col shadow-sm hover:-translate-y-0.5 transition-all duration-200 no-underline animate-fade-in-up stagger-<?php echo min($i, 9); ?>"
            data-title="<?php echo esc_attr($title); ?>"
            data-author="<?php echo esc_attr($author); ?>">
 
@@ -94,11 +97,7 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
                     <div class="text-4xl opacity-20">📖</div>
                 <?php endif; ?>
 
-                <?php if ($has_inhoudelijk) : ?>
-                    <div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-                        ⚠️ Inhoudelijk
-                    </div>
-                <?php endif; ?>
+
             </div>
 
             <!-- Info -->

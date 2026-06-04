@@ -35,125 +35,9 @@ add_action('wp_head', 'boekcontrole_tailwind_cdn', 1);
 
 
 /* ================================================================
-   2. SEO — Meta tags, Open Graph, Schema, Sitemap, Robots
+   2. SEO & SITEMAP
    ================================================================ */
-
-function boekcontrole_seo_meta() {
-    $site_name = 'BoekControle.nl';
-    $logo_url = get_template_directory_uri() . '/img/logo.png';
-
-    // Defaults
-    $title = $site_name . ' — Correcties in Islamitische boeken';
-    $description = 'Centrale plek voor het melden en bijhouden van correcties in Islamitische boeken. Onder toezicht van Ustaadh Bilaal Abu Yunus (حفظه الله).';
-    $url = home_url($_SERVER['REQUEST_URI'] ?? '/');
-    $type = 'website';
-
-    if (is_singular('book')) {
-        $book_title = get_the_title();
-        $auteur = get_post_meta(get_the_ID(), 'auteur', true);
-        $title = $book_title . ' — Correcties | ' . $site_name;
-        $description = 'Bekijk correcties voor ' . $book_title . ($auteur ? ' van ' . $auteur : '') . '. ' . $site_name;
-        $type = 'article';
-    } elseif (is_singular('correction')) {
-        $corr_title = get_the_title();
-        $book_id = get_post_meta(get_the_ID(), 'book_id', true);
-        $book_title = $book_id ? get_the_title($book_id) : 'een boek';
-        $title = $corr_title . ' | ' . $site_name;
-        $description = 'Specifieke correctie voor het boek ' . $book_title . '. Bekijk de fout en de juiste weergave.';
-        $type = 'article';
-    } elseif (is_page()) {
-        $page_title = get_the_title();
-        $title = $page_title . ' | ' . $site_name;
-    }
-
-    echo "\n<!-- SEO Meta -->\n";
-    echo '<meta name="description" content="' . esc_attr($description) . '">' . "\n";
-    echo '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">' . "\n";
-    echo '<link rel="canonical" href="' . esc_url($url) . '">' . "\n";
-
-    // Open Graph
-    echo '<meta property="og:type" content="' . $type . '">' . "\n";
-    echo '<meta property="og:title" content="' . esc_attr($title) . '">' . "\n";
-    echo '<meta property="og:description" content="' . esc_attr($description) . '">' . "\n";
-    echo '<meta property="og:url" content="' . esc_url($url) . '">' . "\n";
-    echo '<meta property="og:site_name" content="' . $site_name . '">' . "\n";
-    echo '<meta property="og:locale" content="nl_NL">' . "\n";
-    echo '<meta property="og:image" content="' . esc_url($logo_url) . '">' . "\n";
-
-    // Twitter
-    echo '<meta name="twitter:card" content="summary">' . "\n";
-    echo '<meta name="twitter:title" content="' . esc_attr($title) . '">' . "\n";
-    echo '<meta name="twitter:description" content="' . esc_attr($description) . '">' . "\n";
-
-    // JSON-LD Schema
-    $schema = [
-        '@context' => 'https://schema.org',
-        '@type' => 'WebSite',
-        'name' => $site_name,
-        'url' => home_url('/'),
-        'description' => $description,
-        'inLanguage' => 'nl',
-    ];
-    echo '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '</script>' . "\n";
-}
-add_action('wp_head', 'boekcontrole_seo_meta', 5);
-
-// Dynamic XML Sitemap
-function boekcontrole_sitemap() {
-    if (!isset($_GET['bc_sitemap'])) return;
-
-    header('Content-Type: application/xml; charset=utf-8');
-    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
-
-    // Homepage
-    echo '<url><loc>' . home_url('/') . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>' . "\n";
-
-    // Pages
-    $pages = get_pages(['post_status' => 'publish']);
-    foreach ($pages as $p) {
-        echo '<url><loc>' . get_permalink($p->ID) . '</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>' . "\n";
-    }
-
-    // Books
-    $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' => 'publish']);
-    foreach ($books as $b) {
-        echo '<url><loc>' . get_permalink($b->ID) . '</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>' . "\n";
-    }
-
-    // Corrections
-    $corrections = get_posts(['post_type' => 'correction', 'numberposts' => -1, 'post_status' => 'publish']);
-    foreach ($corrections as $c) {
-        echo '<url><loc>' . get_permalink($c->ID) . '</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>' . "\n";
-    }
-
-    echo '</urlset>';
-    exit;
-}
-add_action('template_redirect', 'boekcontrole_sitemap');
-
-// Rewrite for sitemap
-function boekcontrole_sitemap_rewrite() {
-    add_rewrite_rule('sitemap\.xml$', 'index.php?bc_sitemap=1', 'top');
-}
-add_action('init', 'boekcontrole_sitemap_rewrite');
-
-function boekcontrole_sitemap_query_var($vars) {
-    $vars[] = 'bc_sitemap';
-    return $vars;
-}
-add_filter('query_vars', 'boekcontrole_sitemap_query_var');
-
-// Robots.txt
-function boekcontrole_robots_txt($output, $public) {
-    $output .= "\nSitemap: " . home_url('/sitemap.xml') . "\n";
-    $output .= "User-agent: *\n";
-    $output .= "Allow: /\n";
-    $output .= "Disallow: /wp-admin/\n";
-    $output .= "Allow: /wp-admin/admin-ajax.php\n";
-    return $output;
-}
-add_filter('robots_txt', 'boekcontrole_robots_txt', 10, 2);
+// Verwijderd: Yoast SEO neemt dit nu over.
 
 
 /* ================================================================
@@ -400,16 +284,19 @@ function boekcontrole_correction_meta_box_html($post) {
     <div class="bc-admin-field">
         <label>🚩 Type fout</label>
         <div class="bc-admin-type-pills">
+            <?php
+            $selected_types = is_array($type) ? $type : ($type ? [$type] : []);
+            ?>
             <div class="bc-admin-type-pill type-inhoudelijk">
-                <input type="radio" name="type" id="type_inhoudelijk" value="inhoudelijk" <?php checked($type, 'inhoudelijk'); ?>>
+                <input type="checkbox" name="type[]" id="type_inhoudelijk" value="inhoudelijk" <?php checked(in_array('inhoudelijk', $selected_types)); ?>>
                 <label for="type_inhoudelijk">⚠️ Inhoudelijk</label>
             </div>
             <div class="bc-admin-type-pill type-typo">
-                <input type="radio" name="type" id="type_typo" value="typo" <?php checked($type, 'typo'); ?>>
+                <input type="checkbox" name="type[]" id="type_typo" value="typo" <?php checked(in_array('typo', $selected_types)); ?>>
                 <label for="type_typo">✏️ Typo</label>
             </div>
             <div class="bc-admin-type-pill type-misvertaling">
-                <input type="radio" name="type" id="type_misvertaling" value="misvertaling" <?php checked($type, 'misvertaling'); ?>>
+                <input type="checkbox" name="type[]" id="type_misvertaling" value="misvertaling" <?php checked(in_array('misvertaling', $selected_types)); ?>>
                 <label for="type_misvertaling">🔄 Misvertaling</label>
             </div>
         </div>
@@ -504,13 +391,20 @@ function boekcontrole_save_correction_meta($post_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
 
-    foreach (['bladzijde', 'druk', 'type', 'beschrijving', 'book_id'] as $f) {
+    foreach (['bladzijde', 'druk', 'beschrijving', 'book_id'] as $f) {
         if (isset($_POST[$f])) update_post_meta($post_id, $f, sanitize_text_field($_POST[$f]));
+    }
+
+    if (isset($_POST['type'])) {
+        $type_val = is_array($_POST['type']) ? array_map('sanitize_text_field', $_POST['type']) : sanitize_text_field($_POST['type']);
+        update_post_meta($post_id, 'type', $type_val);
     }
 
     if (isset($_POST['beschrijving']) && !empty($_POST['beschrijving'])) {
         $title = 'Correctie: ' . wp_trim_words(wp_strip_all_tags($_POST['beschrijving']), 10, '...');
+        remove_action('save_post_correction', 'boekcontrole_save_correction_meta');
         wp_update_post(['ID' => $post_id, 'post_title' => $title]);
+        add_action('save_post_correction', 'boekcontrole_save_correction_meta');
     }
 
     // Save correction photos from admin gallery
@@ -603,13 +497,20 @@ function boekcontrole_correction_column_data($column, $post_id) {
             break;
         case 'type_fout':
             $t = get_post_meta($post_id, 'type', true);
-            $colors = [
-                'inhoudelijk' => ['#fef2f2','#991b1b','#fecaca'],
-                'typo' => ['#fffbeb','#92400e','#fde68a'],
-                'misvertaling' => ['#f5f3ff','#5b21b6','#ddd6fe'],
-            ];
-            $c = $colors[$t] ?? ['#f3f4f6','#6b7280','#e5e7eb'];
-            echo "<span style='background:{$c[0]};color:{$c[1]};border:1px solid {$c[2]};padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;'>" . ucfirst(esc_html($t ?: '—')) . "</span>";
+            $types = is_array($t) ? $t : ($t ? [$t] : []);
+            if (empty($types)) {
+                echo "<span style='background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;'>—</span>";
+            } else {
+                $colors = [
+                    'inhoudelijk' => ['#fef2f2','#991b1b','#fecaca'],
+                    'typo' => ['#fffbeb','#92400e','#fde68a'],
+                    'misvertaling' => ['#f5f3ff','#5b21b6','#ddd6fe'],
+                ];
+                foreach ($types as $type) {
+                    $c = $colors[$type] ?? ['#f3f4f6','#6b7280','#e5e7eb'];
+                    echo "<span style='background:{$c[0]};color:{$c[1]};border:1px solid {$c[2]};padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-right:4px;display:inline-block;margin-bottom:4px;'>" . ucfirst(esc_html($type)) . "</span>";
+                }
+            }
             break;
         case 'bladzijde':
             echo esc_html(get_post_meta($post_id, 'bladzijde', true) ?: '—');
@@ -734,8 +635,12 @@ function boekcontrole_handle_correction_ajax() {
     $cid = wp_insert_post(['post_type'=>'correction','post_status'=>'pending','post_title'=>'Correctie: '.wp_trim_words(wp_strip_all_tags($_POST['beschrijving']),10,'...')]);
     if (is_wp_error($cid)) wp_send_json_error(['message' => 'Er ging iets mis.']);
 
-    foreach (['bladzijde','druk','type','beschrijving'] as $f) {
+    foreach (['bladzijde','druk','beschrijving'] as $f) {
         if (isset($_POST[$f])) update_post_meta($cid, $f, sanitize_text_field($_POST[$f]));
+    }
+    if (isset($_POST['type'])) {
+        $type_val = is_array($_POST['type']) ? array_map('sanitize_text_field', $_POST['type']) : sanitize_text_field($_POST['type']);
+        update_post_meta($cid, 'type', $type_val);
     }
     update_post_meta($cid, 'book_id', $book_id);
 

@@ -34,13 +34,16 @@
             $types = [];
             foreach ($corrections as $c) {
                 $t = get_post_meta($c->ID, 'type', true);
-                if (!isset($types[$t])) $types[$t] = 0;
-                $types[$t]++;
+                $c_types = is_array($t) ? $t : ($t ? [$t] : []);
+                foreach ($c_types as $tt) {
+                    if (!isset($types[$tt])) $types[$tt] = 0;
+                    $types[$tt]++;
+                }
             }
 
             $has_inhoudelijk = isset($types['inhoudelijk']);
         ?>
-        <article class="group bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:shadow-emerald-500/[0.07] hover:-translate-y-1 transition-all duration-300 animate-fade-in-up stagger-<?php echo min($card_index, 12); ?> <?php echo $has_inhoudelijk ? 'border-l-4 border-l-red-400' : ''; ?>">
+        <article class="group bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:shadow-emerald-500/[0.07] hover:-translate-y-1 transition-all duration-300 animate-fade-in-up stagger-<?php echo min($card_index, 12); ?>">
 
             <!-- Cover -->
             <div class="relative bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center p-6 min-h-[12rem]">
