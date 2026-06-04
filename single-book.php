@@ -119,12 +119,12 @@ foreach ($corrections as $c) {
                     </div>
                     <p class="text-sm text-gray-700 leading-relaxed"><?php echo esc_html($desc); ?></p>
                     <?php if (!empty($fotos)) : ?>
-                        <div class="mt-2 flex gap-2 overflow-x-auto">
+                        <div class="mt-3 flex gap-3 overflow-x-auto pb-2 snap-x">
                             <?php foreach ($fotos as $foto_id) :
                                 $full = wp_get_attachment_url($foto_id);
                             ?>
                                 <?php echo wp_get_attachment_image($foto_id, 'medium', false, [
-                                    'class' => 'rounded-md h-32 w-auto object-cover cursor-pointer hover:opacity-80 transition flex-shrink-0',
+                                    'class' => 'rounded-lg h-36 w-auto object-cover border border-gray-200 shadow-sm cursor-pointer hover:opacity-90 transition snap-center flex-shrink-0',
                                     'data-lightbox' => 'true', 'data-full' => $full,
                                 ]); ?>
                             <?php endforeach; ?>
@@ -143,7 +143,7 @@ foreach ($corrections as $c) {
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Blz.</th>
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Type</th>
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Beschrijving</th>
-                        <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Foto</th>
+                        <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400 w-48">Foto's</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -178,11 +178,11 @@ foreach ($corrections as $c) {
                             <td class="px-4 py-3 text-gray-600 max-w-sm"><?php echo esc_html($desc); ?></td>
                             <td class="px-4 py-3">
                                 <?php if (!empty($fotos)) : ?>
-                                    <div class="flex gap-1 flex-wrap">
+                                    <div class="flex gap-2 flex-wrap">
                                         <?php foreach ($fotos as $foto_id) :
                                             $full = wp_get_attachment_url($foto_id);
-                                            echo wp_get_attachment_image($foto_id, 'thumbnail', false, [
-                                                'class' => 'w-10 h-10 rounded object-cover cursor-pointer hover:scale-110 transition-transform shadow-sm',
+                                            echo wp_get_attachment_image($foto_id, 'medium', false, [
+                                                'class' => 'w-16 h-16 rounded-md object-cover border border-gray-200 cursor-pointer hover:ring-2 hover:ring-emerald-500 hover:shadow-md transition-all shadow-sm',
                                                 'data-lightbox' => 'true', 'data-full' => $full,
                                             ]);
                                         endforeach; ?>
