@@ -59,7 +59,10 @@
             <!-- Body -->
             <div class="p-5 flex-1 flex flex-col">
                 <h2 class="text-lg font-bold text-gray-900 mb-1 leading-snug"><?php echo esc_html($title); ?></h2>
-                <p class="text-sm text-gray-500 mb-3"><?php echo esc_html($author ?: 'Auteur onbekend'); ?></p>
+                <p class="text-sm text-gray-500 mb-3 flex justify-between">
+                    <span><?php echo esc_html($author ?: 'Auteur onbekend'); ?></span>
+                    <span class="flex items-center gap-1 text-xs text-gray-400">👁️ <?php echo number_format_i18n(boekcontrole_get_views($book_id)); ?></span>
+                </p>
 
                 <p class="text-sm text-gray-600 mb-3 font-medium">
                     <strong class="text-gray-900"><?php echo count($corrections); ?></strong>

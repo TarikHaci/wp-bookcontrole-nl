@@ -45,7 +45,7 @@ add_action('wp_head', 'boekcontrole_tailwind_cdn', 1);
    ================================================================ */
 
 function boekcontrole_track_view() {
-    if (!is_singular('book')) return;
+    if (!is_singular(['book', 'correction'])) return;
     if (is_admin()) return;
     if (defined('DOING_AJAX') && DOING_AJAX) return;
 
@@ -230,6 +230,8 @@ function boekcontrole_correction_meta_box_html($post) {
         .bc-admin-type-pill.type-inhoudelijk input:checked + label { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
         .bc-admin-type-pill.type-typo input:checked + label { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
         .bc-admin-type-pill.type-misvertaling input:checked + label { border-color: #8b5cf6; background: #f5f3ff; color: #5b21b6; }
+        .bc-admin-stat { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border-radius: 6px; padding: 6px 12px; font-size: 13px; color: #475569; font-weight: 500; }
+        a.bc-admin-stat:hover { background: #e2e8f0; color: #1e293b; }
         /* Photo gallery admin styles */
         .bc-admin-gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
         .bc-admin-gallery-item { position: relative; width: 120px; height: 120px; border-radius: 8px; overflow: hidden; border: 2px solid #e5e7eb; background: #f9fafb; }
@@ -326,6 +328,15 @@ function boekcontrole_correction_meta_box_html($post) {
         <input type="hidden" id="bc-admin-fotos-ids" name="correction_fotos_ids" value="<?php echo esc_attr(implode(',', $foto_ids)); ?>">
         <button type="button" id="bc-admin-add-fotos" class="bc-admin-add-fotos">📷 Afbeeldingen toevoegen</button>
     </div>
+
+    <?php if ($post->ID && get_post_status($post->ID) !== 'auto-draft') : ?>
+    <div class="bc-admin-field">
+        <label>📊 Statistieken</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="bc-admin-stat">👁️ <?php echo number_format_i18n(boekcontrole_get_views($post->ID)); ?> weergaven</span>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <script>
     jQuery(document).ready(function($) {
@@ -482,6 +493,7 @@ function boekcontrole_correction_columns($columns) {
         'bladzijde' => '📄 Blz.',
         'druk' => '📚 Druk',
         'beschrijving_kort' => '📝 Beschrijving',
+        'views' => '👁️ Views',
         'date' => 'Datum',
     ];
 }
@@ -522,15 +534,37 @@ function boekcontrole_correction_column_data($column, $post_id) {
             $d = get_post_meta($post_id, 'beschrijving', true);
             echo $d ? '<span style="color:#4b5563;">' . esc_html(wp_trim_words($d, 8, '...')) . '</span>' : '—';
             break;
+        case 'views':
+            $v = boekcontrole_get_views($post_id);
+            echo "<span style='color:#64748b;font-weight:500;'>" . number_format_i18n($v) . "</span>";
+            break;
     }
 }
 add_action('manage_correction_posts_custom_column', 'boekcontrole_correction_column_data', 10, 2);
 
 function boekcontrole_correction_sortable_columns($columns) {
-    $columns['boek'] = 'boek'; $columns['type_fout'] = 'type_fout'; $columns['bladzijde'] = 'bladzijde';
+    $columns['boek'] = 'boek';
+    $columns['type_fout'] = 'type_fout';
+    $columns['bladzijde'] = 'bladzijde';
+    $columns['views'] = 'views';
     return $columns;
 }
 add_filter('manage_edit-correction_sortable_columns', 'boekcontrole_correction_sortable_columns');
+
+function boekcontrole_book_sortable_columns($columns) {
+    $columns['views'] = 'views';
+    return $columns;
+}
+add_filter('manage_edit-book_sortable_columns', 'boekcontrole_book_sortable_columns');
+
+function boekcontrole_orderby_views($query) {
+    if (!is_admin() || !$query->is_main_query()) return;
+    if ($query->get('orderby') === 'views') {
+        $query->set('meta_key', 'bc_views');
+        $query->set('orderby', 'meta_value_num');
+    }
+}
+add_action('pre_get_posts', 'boekcontrole_orderby_views');
 
 
 /* ================================================================

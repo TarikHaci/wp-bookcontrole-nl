@@ -70,6 +70,11 @@ $author     = $book_id ? get_post_meta($book_id, 'auteur', true) : '';
                     <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Druk / Editie</span>
                     <span class="text-sm font-semibold text-gray-800"><?php echo esc_html($druk ?: '—'); ?></span>
                 </div>
+                <div class="w-px h-8 bg-gray-200 hidden sm:block"></div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Weergaven</span>
+                    <span class="text-sm font-semibold text-gray-800 font-medium text-emerald-700">👁️ <?php echo number_format_i18n(boekcontrole_get_views($correction_id)); ?></span>
+                </div>
             </div>
 
             <!-- Beschrijving -->
