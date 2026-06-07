@@ -14,11 +14,14 @@ $corrections = get_posts([
 $types_available = [];
 $type_counts = [];
 foreach ($corrections as $c) {
-    $t = get_post_meta($c->ID, 'type', true);
-    if ($t) {
-        if (!in_array($t, $types_available)) $types_available[] = $t;
-        if (!isset($type_counts[$t])) $type_counts[$t] = 0;
-        $type_counts[$t]++;
+    $t_raw = get_post_meta($c->ID, 'type', true);
+    $t_list = is_array($t_raw) ? $t_raw : ($t_raw ? [$t_raw] : []);
+    foreach ($t_list as $t) {
+        if ($t) {
+            if (!in_array($t, $types_available)) $types_available[] = $t;
+            if (!isset($type_counts[$t])) $type_counts[$t] = 0;
+            $type_counts[$t]++;
+        }
     }
 }
 ?>
@@ -88,21 +91,27 @@ foreach ($corrections as $c) {
         <!-- Mobile Cards -->
         <div class="sm:hidden space-y-3">
             <?php foreach ($corrections as $idx => $correction) :
-                $type = get_post_meta($correction->ID, 'type', true);
+                $type_raw = get_post_meta($correction->ID, 'type', true);
+                $type_arr = is_array($type_raw) ? $type_raw : ($type_raw ? [$type_raw] : []);
+                $type = reset($type_arr) ?: '';
                 $druk = get_post_meta($correction->ID, 'druk', true);
                 $blz  = get_post_meta($correction->ID, 'bladzijde', true);
                 $desc = get_post_meta($correction->ID, 'beschrijving', true);
                 $fotos = bc_get_correction_fotos($correction->ID);
                 $permalink = get_permalink($correction->ID);
             ?>
-                <div id="correctie-<?php echo $correction->ID; ?>" 
+                <div id="correctie-<?php echo $correction->ID; ?>"
                      class="group bg-white rounded-lg border border-gray-200 p-4 shadow-sm border-l-[3px] <?php echo bc_type_border_class($type); ?> animate-fade-in-up target:ring-2 target:ring-emerald-500 target:bg-emerald-50 transition-colors relative"
-                     data-correction-type="<?php echo esc_attr($type); ?>"
+                     data-correction-type="<?php echo esc_attr(implode(' ', $type_arr)); ?>"
                      style="animation-delay:<?php echo $idx * 50; ?>ms">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($type); ?>">
-                            <?php echo ucfirst(esc_html($type)); ?>
+                        <div class="flex gap-1 flex-wrap">
+                        <?php foreach ($type_arr as $t_item) : ?>
+                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($t_item); ?>">
+                            <?php echo ucfirst(esc_html($t_item)); ?>
                         </span>
+                        <?php endforeach; ?>
+                        </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs text-gray-400">p. <?php echo esc_html($blz); ?> · druk <?php echo esc_html($druk); ?></span>
                             <a href="<?php echo esc_url($permalink); ?>" 
@@ -148,14 +157,16 @@ foreach ($corrections as $c) {
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     <?php foreach ($corrections as $correction) :
-                        $type = get_post_meta($correction->ID, 'type', true);
+                        $type_raw = get_post_meta($correction->ID, 'type', true);
+                        $type_arr = is_array($type_raw) ? $type_raw : ($type_raw ? [$type_raw] : []);
+                        $type = reset($type_arr) ?: '';
                         $druk = get_post_meta($correction->ID, 'druk', true);
                         $blz  = get_post_meta($correction->ID, 'bladzijde', true);
                         $desc = get_post_meta($correction->ID, 'beschrijving', true);
                         $fotos = bc_get_correction_fotos($correction->ID);
                         $permalink = get_permalink($correction->ID);
                     ?>
-                        <tr id="correctie-<?php echo $correction->ID; ?>" class="hover:bg-gray-50/60 transition-colors target:bg-emerald-50 group" data-correction-type="<?php echo esc_attr($type); ?>">
+                        <tr id="correctie-<?php echo $correction->ID; ?>" class="hover:bg-gray-50/60 transition-colors target:bg-emerald-50 group" data-correction-type="<?php echo esc_attr(implode(' ', $type_arr)); ?>">
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
                                 <button title="Kopieer link"
                                    class="inline-block mr-1 text-gray-300 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100 target:opacity-100 bg-transparent border-none p-0 cursor-pointer"
@@ -171,9 +182,11 @@ foreach ($corrections as $c) {
                             </td>
                             <td class="px-4 py-3 text-gray-600"><?php echo esc_html($blz); ?></td>
                             <td class="px-4 py-3">
-                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($type); ?>">
-                                    <?php echo ucfirst(esc_html($type)); ?>
+                                <?php foreach ($type_arr as $t_item) : ?>
+                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold <?php echo bc_type_badge_classes($t_item); ?>">
+                                    <?php echo ucfirst(esc_html($t_item)); ?>
                                 </span>
+                                <?php endforeach; ?>
                             </td>
                             <td class="px-4 py-3 text-gray-600 max-w-sm"><?php echo esc_html($desc); ?></td>
                             <td class="px-4 py-3">
