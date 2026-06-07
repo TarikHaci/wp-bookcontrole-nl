@@ -105,7 +105,9 @@ $books = get_posts(['post_type' => 'book', 'numberposts' => -1, 'post_status' =>
                 <h3 class="text-[14px] font-bold text-gray-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2"><?php echo esc_html($title); ?></h3>
                 <p class="text-xs text-gray-400 mb-3 flex justify-between">
                     <span><?php echo esc_html($author ?: 'Auteur onbekend'); ?></span>
-                    <span class="flex items-center gap-1">👁️ <?php echo number_format_i18n(boekcontrole_get_views($book_id)); ?></span>
+                    <?php if (is_user_logged_in()) : ?>
+                        <span class="flex items-center gap-1">👁️ <?php echo number_format_i18n(boekcontrole_get_views($book_id)); ?></span>
+                    <?php endif; ?>
                 </p>
 
                 <div class="mt-auto flex items-center justify-between">

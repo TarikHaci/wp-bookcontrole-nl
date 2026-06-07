@@ -51,9 +51,11 @@ foreach ($corrections as $c) {
                 <span class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                     <?php echo count($corrections); ?> correctie<?php echo count($corrections) !== 1 ? 's' : ''; ?>
                 </span>
+                <?php if (is_user_logged_in()) : ?>
                 <span class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200">
                     👁️ <?php echo number_format_i18n(boekcontrole_get_views($book_id)); ?> weergaven
                 </span>
+                <?php endif; ?>
                 <?php foreach ($type_counts as $t => $cnt) : ?>
                     <span class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold <?php echo bc_type_badge_classes($t); ?>">
                         <?php echo ucfirst(esc_html($t)); ?> (<?php echo $cnt; ?>)
@@ -116,7 +118,9 @@ foreach ($corrections as $c) {
                         <?php endforeach; ?>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-gray-400">👁️ <?php echo number_format_i18n(boekcontrole_get_views($correction->ID)); ?> · p. <?php echo esc_html($blz); ?> · druk <?php echo esc_html($druk); ?></span>
+                            <span class="text-xs text-gray-400">
+                                <?php if (is_user_logged_in()) echo '👁️ ' . number_format_i18n(boekcontrole_get_views($correction->ID)) . ' · '; ?>p. <?php echo esc_html($blz); ?> · druk <?php echo esc_html($druk); ?>
+                            </span>
                             <a href="<?php echo esc_url($permalink); ?>" 
                                title="Bekijk op aparte pagina"
                                class="text-gray-300 hover:text-emerald-600 transition-colors">
@@ -155,7 +159,9 @@ foreach ($corrections as $c) {
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Blz.</th>
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Type</th>
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">Beschrijving</th>
+                        <?php if (is_user_logged_in()) : ?>
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400 w-24">👁️ Views</th>
+                        <?php endif; ?>
                         <th class="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400 w-48">Foto's</th>
                     </tr>
                 </thead>
@@ -193,7 +199,9 @@ foreach ($corrections as $c) {
                                 <?php endforeach; ?>
                             </td>
                             <td class="px-4 py-3 text-gray-600 max-w-sm"><?php echo esc_html($desc); ?></td>
+                            <?php if (is_user_logged_in()) : ?>
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">👁️ <?php echo number_format_i18n(boekcontrole_get_views($correction->ID)); ?></td>
+                            <?php endif; ?>
                             <td class="px-4 py-3">
                                 <?php if (!empty($fotos)) : ?>
                                     <div class="flex gap-2 flex-wrap">
